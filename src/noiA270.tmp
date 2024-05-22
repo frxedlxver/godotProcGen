@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://ct4y62u26mkhu"]
+
+[ext_resource type="Script" path="res://src/noise_visualiser.gd" id="1_o2ou3"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="NoiseVis" type="Node2D" parent="."]
+script = ExtResource("1_o2ou3")
