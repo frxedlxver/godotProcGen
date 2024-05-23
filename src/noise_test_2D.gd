@@ -7,6 +7,7 @@ var palette = Palettes.cm_blue_yellow
 var ctrlHeld = false
 var shiftHeld = false
 var offset : float = 0
+var worm : PerlinWorm = PerlinWorm.new()
 var p
 
 # Called when the node enters the scene tree for the first time.
@@ -22,11 +23,10 @@ func test_worms():
 	image = ImageProcessing.get_empty_image(1, 1)
 	image.set_pixel(0, 0, Color.GREEN)
 	image = ImageProcessing.resize_2D(image, size, size)
+	worm._target_point = Vector2i(256, 256)
+	worm._cur_point = Vector2i(0, 0)
 	
-	var worm : PerlinWorm = PerlinWorm.new()
-	worm._target_points = [Vector2i(100, 150), Vector2(256, 256)]
-	worm.find_worm_points(Vector2i(50, 50), image.get_size())
-	image = worm.draw_worm_points(image)
+	
 	_updateTexture()
 	
 func test_2d_noise():
@@ -113,7 +113,11 @@ static func get_zoom_to_fit_amount(image_size : Vector2, viewport_size : Vector2
 		
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
-	queue_redraw()
+	if (PerlinWorm.a_inside_b(worm._cur_point, image.get_size())):
+		worm.get_next_point()
+		image = worm.draw_worm_points(image)
+		_updateTexture()
+		queue_redraw()
 	
 func _draw():
 	if (texture != null):
