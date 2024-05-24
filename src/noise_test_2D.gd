@@ -14,7 +14,7 @@ var p
 func _ready():
 	get_viewport().canvas_item_default_texture_filter=Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST	
 	get_tree().get_root().size_changed.connect(_updateTexture) 	
-
+	get_window().mode = Window.MODE_MAXIMIZED
 	test_worms()
 	_updateTexture()
 	
@@ -23,85 +23,26 @@ func test_worms():
 	image = ImageProcessing.get_empty_image(1, 1)
 	image.set_pixel(0, 0, Color.GREEN)
 	image = ImageProcessing.resize_2D(image, size, size)
-	worm._target_point = Vector2i(256, 256)
+	worm._target_point = Vector2i(size, size)
 	worm._cur_point = Vector2i(0, 0)
 	
 	
 	_updateTexture()
-	
-func test_2d_noise():
-	settings = NoiseSettings2D.new()
-	settings.freq = 0.04
-	settings.width = 256
-	settings.height = 256
-	settings.invert = false
-	settings.randomSeed = false
-	settings.normalize = true
-	settings.type = FastNoiseLite.TYPE_PERLIN
-	settings.layers = 4
 
-	p = Palettes.cm_red_cyan
-	p.append_array(Palettes.cm_blue_yellow)
-	p = Palettes.sort_palette(p, Palettes.value_ascending)
 func _updateImage():
 	image = Noise2D.layered_noise_image_2d(settings)
 
 	image = ImageProcessing.posterize_2D(image, p, offset)
 	
 	_updateTexture()
+	
 func _updateTexture():
 	if image != null:
-		texture = ImageTexture.create_from_image(image)		
-		var zoom_amount : Vector2 = get_zoom_to_fit_amount(Vector2(image.get_width(), image.get_height()), get_viewport_rect().size)
-		
-		get_viewport().get_camera_2d().zoom = zoom_amount
+		texture = ImageTexture.create_from_image(image)
 
-func _unhandled_key_input(event : InputEvent):
-	var key : InputEventKey = event
-	if key.is_pressed():
-		if key.physical_keycode == KEY_CTRL:
-			ctrlHeld = true
-		elif key.physical_keycode == KEY_SHIFT:
-			shiftHeld = true
+		zoom_to_fit(image.get_size(), get_viewport_rect().size)
 		
-		if key.physical_keycode == KEY_EQUAL:
-			settings.width *= 2
-			settings.height *= 2
-			settings.freq /= 2
-			_updateImage()
-		elif key.physical_keycode == KEY_MINUS:
-			settings.width /= 2
-			settings.height /= 2
-			settings.freq *= 2			
-			_updateImage()
-		elif key.physical_keycode == KEY_UP:
-			if ctrlHeld: settings.freq = maxf(settings.freq - 0.001, 0)
-			elif shiftHeld: offset += 0.01
-			else: settings.layers += 1
-			_updateImage()
-		elif key.physical_keycode == KEY_DOWN:
-			if ctrlHeld: settings.freq += 0.001
-			elif shiftHeld: offset -= 0.01
-			else: settings.layers -= 1
-			settings.layers = max(settings.layers, 1)
-			_updateImage()
-		elif key.physical_keycode == KEY_R:
-			settings.seed = randi()
-			_updateImage()
-		elif key.physical_keycode == KEY_I:
-			settings.invert = !settings.invert
-			_updateImage()
-		elif key.physical_keycode == KEY_N:
-			settings.type = (settings.type + 1) % 6
-			print(settings.type)
-			_updateImage()
-	elif key.is_released():
-		if key.physical_keycode == KEY_CTRL:
-			ctrlHeld = false
-		elif key.physical_keycode == KEY_SHIFT:
-			shiftHeld = false
-		
-static func get_zoom_to_fit_amount(image_size : Vector2, viewport_size : Vector2) -> Vector2:
+func zoom_to_fit(image_size : Vector2, viewport_size : Vector2):
 	var shortest_side = mini(viewport_size.x, viewport_size.y)
 	var ratio
 	if shortest_side == viewport_size.y:
@@ -109,16 +50,32 @@ static func get_zoom_to_fit_amount(image_size : Vector2, viewport_size : Vector2
 	else:
 		ratio = viewport_size.y / image_size.x
 		
-	return Vector2.ONE * ratio
+	get_viewport().get_camera_2d().zoom = Vector2.ONE * ratio
 		
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(delta):
+func _process(delta):
+	process_smooth()
+	_updateTexture()
+	queue_redraw()
+		
+func process_smooth():
+	if (!worm.has_next_pos()):
+		if (PerlinWorm.a_inside_b(worm._cur_point, image.get_size())):
+			worm.get_next_point()
+	else:
+		while(worm.has_next_pos()):
+			worm.draw_next_pos(image)
+		
+func process_fast():
+	while(worm.has_next_pos()):
+		worm.draw_next_pos(image)
 	if (PerlinWorm.a_inside_b(worm._cur_point, image.get_size())):
 		worm.get_next_point()
-		image = worm.draw_worm_points(image)
-		_updateTexture()
-		queue_redraw()
 	
+func process_instant():
+	worm._target_points = [Vector2i(75, 25), image.get_size()]
+	worm.find_worm_points(Vector2i.ZERO, image.get_size())
+	image = worm.draw_worm_points(image)
 func _draw():
 	if (texture != null):
 		draw_texture(texture, -texture.get_size() / 2)
