@@ -8,6 +8,7 @@ var ctrlHeld = false
 var shiftHeld = false
 var offset : float = 0
 var worm : PerlinWorm = PerlinWorm.new()
+var river : River = River.new()
 var p
 
 # Called when the node enters the scene tree for the first time.
@@ -15,18 +16,20 @@ func _ready():
 	get_viewport().canvas_item_default_texture_filter=Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST	
 	get_tree().get_root().size_changed.connect(_updateTexture) 	
 	get_window().mode = Window.MODE_MAXIMIZED
-	test_worms()
+	initialize_image(1024)
+	test_river()
 	_updateTexture()
 	
-func test_worms():
-	var size = 256
+func initialize_image(size : int = 256):
 	image = ImageProcessing.get_empty_image(1, 1)
 	image.set_pixel(0, 0, Color.GREEN)
 	image = ImageProcessing.resize_2D(image, size, size)
-	worm._target_point = Vector2i(size, size)
-	worm._cur_point = Vector2i(0, 0)
 	
+func test_river():
+	river.create_river(Vector2i.ZERO, image.get_size(), image.get_size(), 2, 6)
 	
+	for point in river.get_all_points():
+		image.set_pixelv(point, Color.BLUE)
 	_updateTexture()
 
 func _updateImage():
@@ -54,28 +57,8 @@ func zoom_to_fit(image_size : Vector2, viewport_size : Vector2):
 		
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	process_smooth()
-	_updateTexture()
 	queue_redraw()
-		
-func process_smooth():
-	if (!worm.has_next_pos()):
-		if (PerlinWorm.a_inside_b(worm._cur_point, image.get_size())):
-			worm.get_next_point()
-	else:
-		while(worm.has_next_pos()):
-			worm.draw_next_pos(image)
-		
-func process_fast():
-	while(worm.has_next_pos()):
-		worm.draw_next_pos(image)
-	if (PerlinWorm.a_inside_b(worm._cur_point, image.get_size())):
-		worm.get_next_point()
-	
-func process_instant():
-	worm._target_points = [Vector2i(75, 25), image.get_size()]
-	worm.find_worm_points(Vector2i.ZERO, image.get_size())
-	image = worm.draw_worm_points(image)
+
 func _draw():
 	if (texture != null):
 		draw_texture(texture, -texture.get_size() / 2)
