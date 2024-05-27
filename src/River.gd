@@ -6,6 +6,7 @@ var worm : PerlinWorm = PerlinWorm.new()
 
 var parent_river : River
 var children : Array[River] = []
+var iterations : int = 0
 
 var start_point : Vector2i = Vector2i.ZERO
 var split_point_chance = 0.5
@@ -27,7 +28,8 @@ func create_river(starting_point : Vector2i, target_point : Vector2i, bounds : V
 	
 	var main_path : Array[Vector2i] = worm.path
 	
-	if max_width > min_width:
+	
+	if iterations > 0 && max_width > min_width:
 		split_points = find_split_points(main_path)
 		print(split_points)
 		print("finding split");
@@ -35,6 +37,7 @@ func create_river(starting_point : Vector2i, target_point : Vector2i, bounds : V
 		for point in split_points:
 			target_point = Vector2i(Vector2(target_point).rotated(deg_to_rad(randf_range(-10, 10))))
 			var new_child = River.new()
+			new_child.iterations = iterations - 1
 			new_child.parent_river = self
 			children.append(new_child)
 			new_child.create_river(point, target_point, bounds, min_width, max_width - 1)

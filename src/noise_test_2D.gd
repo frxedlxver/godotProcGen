@@ -26,6 +26,7 @@ func initialize_image(size : int = 256):
 	image = ImageProcessing.resize_2D(image, size, size)
 	
 func test_river():
+	river.iterations = 2
 	river.create_river(Vector2i.ZERO, image.get_size(), image.get_size(), 2, 6)
 	
 	for point in river.get_all_points():
