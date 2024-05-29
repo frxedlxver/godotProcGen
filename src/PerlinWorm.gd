@@ -14,8 +14,8 @@ var target_point : Vector2i = Vector2i.ZERO
 var bounds : Vector2i = Vector2i.ZERO
 var target_point_range : float = 2
 
-var noise_weight : float = 0.4
-var cur_direction_weight : float = 0.2
+var noise_weight : float = 0.3
+var cur_direction_weight : float = 0.3
 var target_direction_weight : float = 0.4
 
 var _noise : FastNoiseLite
@@ -38,7 +38,7 @@ func _init(thickness : int = 3, worm_color : Color = Color.DODGER_BLUE, max_move
 	
 	var settings = NoiseSettings2D.new()
 	settings.type = FastNoiseLite.TYPE_PERLIN
-	settings.freq = 0.005
+	settings.freq = 0.01
 	self._noise =  Noise2D.get_noise(settings)
 	_noise.seed = self._seed
 	
@@ -50,26 +50,30 @@ func find_worm_points(staring_point : Vector2i = self.cur_position, starting_dir
 		
 		# make a copy of target_points to operate on
 		var temp_targets = target_points.duplicate(true)
-		
 		# break if out of targets or outside of bounds
 		while temp_targets.size() > 0  and VectorTools.a_inside_b(self.cur_position, self.bounds):
 			target_point = temp_targets[0]
-			if VectorTools.a_within_range_of_b(self.cur_position, target_point, 10):
+			if VectorTools.a_within_range_of_b(self.cur_position, target_point, 15):
 				target_points[0] = self.cur_position
 				temp_targets.remove_at(0)
 				if (temp_targets.size() > 0):
 					target_point = temp_targets[0]
 			get_next_point()
 
+func get_points_in_bounds(bounds: Vector2i):
+	var result = []
+	for point in path:
+		if VectorTools.a_inside_b(point, bounds):
+			result.append(point)
+			
+	return result
 
 func get_next_point():
-	var value = _noise.get_noise_2dv(self.cur_position)
-	
 	self._last_direction = self.cur_direction
 	
+	self.cur_direction = calculate_new_direction()
 	# Calculate next position and update current direction
-	var next_pos = next_worm_pos_targeted(value)
-	self.cur_direction = Vector2(next_pos - self.cur_position).normalized()
+	var next_pos = next_worm_pos()
 	
 	# Calculate the difference between last direction and current direction
 	var direction_diff = _last_direction.angle_to( self.cur_direction)
@@ -80,7 +84,7 @@ func get_next_point():
 	# Add new points to path
 	# maximum is +1 because
 	for i in range(cur_speed + 1):
-		var new_point = calc_next_position_rounded(i)
+		var new_point = calc_displacement_rounded(cur_position, i, cur_direction)
 		self.path.append(new_point)
 
 	self.cur_position = next_pos
@@ -92,27 +96,23 @@ func calculate_speed(direction_diff):
 		delta_speed = -1
 	return clampi(cur_speed + delta_speed, 1, _max_move_speed)
 
-
-# finds next appropriate point as a weighted interpolation of current direction, noise direction influence, and target direction
-func next_worm_pos_targeted(noise_value : float) -> Vector2i:
+func calculate_new_direction() -> Vector2:
+	var noise_value = _noise.get_noise_2dv(self.cur_position)
+	
 	var noise_direction = NoiseTools.noise_val_to_dir(noise_value)
 	var target_direction = Vector2(target_point - cur_position).normalized()
-	self.cur_direction = (
-		self.cur_direction * cur_direction_weight 
-		+ noise_direction * noise_weight 
-		+ target_direction * target_direction_weight
+	var new_direction = (
+		self.cur_direction
+		+ noise_direction
+		+ target_direction
 		).normalized()
-	return calc_next_position_rounded()
+		
+	return new_direction
 
+# finds next appropriate point as a weighted interpolation of current direction, noise direction influence, and target direction
+func next_worm_pos() -> Vector2i:
+	return calc_displacement_rounded(cur_position, cur_speed, cur_direction)
 
-func calc_next_position_rounded(distance : float = self.cur_speed) -> Vector2i:
-	var next_pos = Vector2(cur_position.x, cur_position.y) + (cur_direction * distance)
+func calc_displacement_rounded(start: Vector2i, distance : float, direction : Vector2) -> Vector2i:
+	var next_pos : Vector2 = Vector2(start) + (direction * distance)
 	return Vector2i(round(next_pos.x), round(next_pos.y))
-
-
-# Function to get the next worm position in a tile-based manner
-func next_worm_pos(value : float, cur_x: int, cur_y: int, move_speed: int = 1) -> Vector2i:
-	self.cur_direction = self.cur_direction * 0.5 + NoiseTools.noise_val_to_dir(value) * 0.5
-	var next_pos = Vector2(cur_x, cur_y) + self.cur_direction * move_speed
-	return Vector2i(round(next_pos.x), round(next_pos.y))
-	

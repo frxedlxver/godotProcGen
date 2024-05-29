@@ -1,5 +1,23 @@
 class_name Palettes
 
+class PaletteEntry:
+	var min : float = 0
+	var max : float = 0
+	var color : Color = Color.WHITE
+	
+	func _init(color :Color , min: float, max: float):
+		self.color = color
+		self.min = min
+		self.max = max
+		
+static var blue_lv = 0.4
+
+static var p_terrain : Array[PaletteEntry] = [
+	PaletteEntry.new(Color(0.0,0.0,0.4), 0.00, 0.4),
+	PaletteEntry.new(Color(0.25, 0.4, 0.125), 0.4, 0.9),
+	PaletteEntry.new(Color(0.7, 0.6, 0.5), 0.9, 1.0)
+]
+
 static var gm_gray_8 : Array[Color] = [
 	Color(0,0,0),
 	Color(0.125, 0.125, 0,125),
@@ -31,7 +49,6 @@ static var cm_red_cyan : Array[Color] = [
 	Color(red_lv,1,1),
 ]
 
-static var blue_lv = 0.4
 static var cm_blue_yellow : Array[Color] = [
 	Color(0.0,0.0,blue_lv),
 	Color(0.125,0.125, blue_lv),
@@ -47,21 +64,16 @@ static var cm_blue_yellow : Array[Color] = [
 static var cm_terrain : Array[Color] = [
 	Color(0.0,0.0,blue_lv),
 	Color(0.0,0.0,blue_lv),
-	Color(0.0,0.0,blue_lv),
-	Color(0.0,0.0,blue_lv),
-	Color(0.0,0.0,blue_lv),	
-	Color(0.125,0.125, blue_lv),
-	Color(0.125,0.125, blue_lv),
 	Color(0.125,0.125, blue_lv),
 	Color(0.125,0.125, blue_lv),
 	Color(0.25, blue_lv, 0.125),
-	Color(0.25, blue_lv, 0.125),	
-	Color(0.25, blue_lv, 0.125),	
-	Color(0.25, blue_lv, 0.125),	
-	Color(0.25, blue_lv, 0.125),	
 	Color(0.25, blue_lv, 0.125),
+	Color(0.25, 0.35, 0.125),
+	Color(0.35, blue_lv, 0.125),
+	Color(0.35, blue_lv, 0.125),
 	Color(0.5,0.5,0.5),
 	Color(0.5,0.5,0.5),
+	Color(0.75,0.75,0.75),
 	Color(0.75,0.75,0.75),
 	Color(1,1,1),
 ]

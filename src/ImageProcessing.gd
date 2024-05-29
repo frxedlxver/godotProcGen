@@ -18,6 +18,25 @@ static func posterize_2D(image : Image, palette : Array[Color], offset : float =
 				
 	return newImage
 	
+	
+static func posterize(image : Image, palette, offset : float = 0) -> Image:
+	
+	var newImage = get_empty_image(image.get_width(), image.get_height())
+	var colour_count = palette.size()
+	
+	for x in range(newImage.get_width()):
+		for y in range(newImage.get_height()):
+			
+			var value = image.get_pixel(x, y).v + offset
+			var idx = frac2idx_clamped_linear(value, colour_count)
+			
+			var c : Color = Color.HOT_PINK
+			for entry in palette:
+				if(value >= entry.min && value <= entry.max):
+					c = entry.color
+			newImage.set_pixel(x, y, c)
+				
+	return newImage
 static func posterize_3D_linear(image_3D : Array[Image], palette : Array[Color], offset : float = 0, delta_offset : float = 0):
 	for z in range(image_3D.size()):
 		image_3D[z] = posterize_2D(image_3D[z], palette, offset)
