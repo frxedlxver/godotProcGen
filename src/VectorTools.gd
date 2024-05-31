@@ -16,6 +16,7 @@ static func a_inside_b(point : Vector2, bounds : Vector2) -> bool:
 	return point.x >= 0 && point.y >= 0 && point.x < bounds.x && point.y < bounds .y;
 	
 static func random_point_along_edge(bounds : Vector2i, edge : Enums.Direction) -> Vector2i:
+	
 	var rand_x = randi_range(0, bounds.x)
 	var rand_y = randi_range(0, bounds.y)
 	
@@ -30,3 +31,17 @@ static func random_point_along_edge(bounds : Vector2i, edge : Enums.Direction) -
 			return Vector2i(bounds.x, rand_y)
 		_:
 			return Vector2i.ZERO
+
+static func vec2i_range(min : int, max : int, max_inclusive : bool = true, omit_center : bool = false, offset: Vector2i = Vector2i.ZERO) -> Array[Vector2i]:
+	var result : Array[Vector2i] = []
+	
+	
+	if max_inclusive:
+		max += 1
+	for x in range (min + offset.x, max + offset.x):
+		for y in range(min + offset.y, max + offset.y):
+			if omit_center and x == offset.x + 0 and y == offset.y + 0:
+				continue
+			result.append(Vector2i(x, y))
+			
+	return result

@@ -17,7 +17,7 @@ func _ready():
 	get_viewport().canvas_item_default_texture_filter=Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST	
 	get_tree().get_root().size_changed.connect(_updateTexture) 	
 	get_window().mode = Window.MODE_MAXIMIZED
-	initialize_image(512)
+	initialize_image(1024)
 	test_river()
 	_updateTexture()
 	
@@ -27,42 +27,37 @@ func initialize_image(size : int = 512):
 	image = ImageProcessing.resize_2D(image, size, size)
 	
 func test_river():
-	river.iterations = 2
 	MIN_RIVER_SIZE = image.get_size().x * (river.iterations + 1)
 	var start : Vector2i = image.get_size()
 	var i : int = 0
-	while (start.x > (image.get_size().x / 4)):
+	while (start.x > (image.get_size().x / 2)):
 		print(start)
 		i += 1
-		start = VectorTools.random_point_along_edge(image.get_size(), Enums.Direction.NORTH)
+		start = VectorTools.random_point_along_edge(image.get_size() - Vector2i.ONE, Enums.Direction.NORTH)
 		
 	print("took ", i, " tries")
 	
-	var target = image.get_size()
-	i = 0
-	target = VectorTools.random_point_along_edge(image.get_size(), Enums.Direction.SOUTH)
-	print("took ", i, " tries")
+	var target = VectorTools.random_point_along_edge(image.get_size() - Vector2i.ONE, Enums.Direction.SOUTH)
 		
-	i = 1
-	river.create_river(start, target, image.get_size(), 2, 6)
+	river.create_river(start, target, image.get_size())
 	
-	while river.worm.path[river.worm.path.size() - 1].y < image.get_size().y or river.descendent_count() < 2:
-		river = River.new()
-		river.iterations = 2		
-		print(river.descendent_count())
-		i += 1
-		river.create_river(start, target, image.get_size(), 2, 6)
-	print("Min river size: ", MIN_RIVER_SIZE)
-	print("river_size: ", river.get_worm_path(image.get_size()).size())
-	print("took ", i, " tries")
-	
-	for point in river.get_all_points():
+	for point in river.get_all_points(4):
 		if VectorTools.a_inside_b(point, image.get_size()):
 			image.set_pixelv(point, Color.BLUE)
-	for point in river.lakes:
-		image.set_pixelv(point, Color.RED)
 	
-	var r = 2
+
+
+	_updateTexture()
+
+
+
+func draw_target():
+	for point in VectorTools.vec2i_range(-5, 5, true, false, worm.target_point):
+		if VectorTools.a_inside_b(point, image.get_size()):
+			image.set_pixelv(point, Color.RED)
+func add_riverbanks(image : Image, radius : int):
+	var r = radius
+	if r < 1: return
 	for x in range(image.get_width()):
 		for y in range(image.get_height()):
 			var point = Vector2i(x, y)
@@ -70,16 +65,18 @@ func test_river():
 				if image.get_pixelv(point) == Color.GREEN:
 					var sand = false
 					for x1 in range(-r, r):
+						if point.x + x1 >= image.get_width() || point.x + x1 < 0:
+							continue
 						if sand:
 							break
 						for y1 in range(-r, r):
+							if point.y + y1 >= image.get_height() || point.y + y1 < 0:
+								continue
 							if image.get_pixelv(point + Vector2i(x1, y1)) == Color.BLUE:
 								sand = true
 								break
 					if sand:
 						image.set_pixelv(point, Color.BISQUE)
-	_updateTexture()
-
 func _updateImage():
 	image = Noise2D.layered_noise_image_2d(settings)
 

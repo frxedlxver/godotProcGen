@@ -14,37 +14,35 @@ var split_point_chance = 0.5
 var target_point : Vector2i = Vector2i.ZERO
 
 
-func create_river(starting_point : Vector2i, target_point : Vector2i, bounds : Vector2i, width : int = 0, start_dir : Vector2i = Vector2i.ZERO):
-	self.min_width = min_width
-	self.max_width = max_width
+func create_river(starting_point : Vector2i, target_point : Vector2i, bounds : Vector2i):
 	
 	worm.bounds = bounds
-	worm.target_points = [target_point * 3]
 	
-	worm.generate_path(starting_point, start_dir, target_point)
+	var validation = func():
+		print("y dir ", worm.cur_direction.y)
+		return worm.cur_direction.y > 0
+	worm.per_step_validation_callback = validation
+	worm.generate_path(starting_point, target_point, Vector2.ZERO, false)
 	
 	
 	
 
 
 
-func get_all_points() -> Array[Vector2i]:
+func get_all_points(width : int) -> Array[Vector2i]:
 	var result : Array[Vector2i] = []
 	for point in worm.get_all_path_positions():
 		for x in range(-width, width):
 			for y in range(-width, width):
 				result.append(point + Vector2i(x, y))
-				
-	for child in children:
-		result.append_array(child.get_all_points())
 		
 	return result
 
 func get_worm_path(bounds: Vector2i) -> Array[Vector2i]:
 	var result : Array[Vector2i] = []
 	for point in worm.path:
-		if VectorTools.a_inside_b(point, bounds):
-			result.append(point)
+		if VectorTools.a_inside_b(point.position, bounds):
+			result.append(point.position)
 	for child in children:
 		result.append_array(child.get_worm_path(bounds))
 		
