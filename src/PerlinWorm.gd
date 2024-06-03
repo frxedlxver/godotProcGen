@@ -2,41 +2,51 @@ extends Node
 class_name PerlinWorm
 
 class PathVertex:
-	var position : Vector2i
-	var speed : int
-	var direction : Vector2
+	var m_position : Vector2i
+	var m_speed : int
+	var m_direction : Vector2
 	
 	func _init(position, speed, direction):
-		self.position = position
-		self.speed = speed
-		self.direction = direction
-		
-static var MAX_SPEED : int = 10
-static var MAX_TURN_ANGLE : float = 90
-static var SPEED_ANGLE_THRESHOLD : int = 15
-
-var path : Array[PathVertex]
-
-var _last_direction : Vector2 = Vector2.ZERO
-var cur_position : Vector2i = Vector2i.ZERO
-var cur_direction : Vector2 = Vector2.ZERO
-var cur_speed : int = 1
-var target_point : Vector2i = Vector2i.ZERO
-var bounds : Vector2i = Vector2i.ZERO
-var min_dist_from_target : float = 10
+		self.m_position = position
+		self.m_speed = speed
+		self.m_direction = direction
 
 
-var noise_weight : float = 0.315
-var cur_direction_weight : float = 0.335
-var target_direction_weight : float = 0.35
+var m_max_speed : int = 3
+var m_max_turn_angle : float = 180
+var m_slowdown_angle_threshold : int = 15
+var m_min_dist_from_target_for_success : float = 1
 
-var _noise : FastNoiseLite
 
-var per_step_validation_callback : Callable
-var use_per_step_validation : bool = false
-var end_on_per_step_validation_failure : bool = false
-var post_generation_validation_callback : Callable
-var use_post_generation_validation : bool = false
+var m_path : Array[PathVertex]
+
+var m_last_direction : Vector2 = Vector2.ZERO
+var m_cur_position : Vector2i = Vector2i.ZERO
+var m_cur_direction : Vector2 = Vector2.ZERO
+var m_cur_speed : int = 1
+var m_target_point : Vector2i = Vector2i.ZERO
+var m_bounds : Vector2i = Vector2i.ZERO
+
+
+# direction calculation params
+var m_noise_weight : float = 0.3
+var m_cur_direction_weight : float = 0.3
+var m_target_direction_weight : float = 0.4
+
+var _m_noise : FastNoiseLite
+
+var m_start : Vector2i
+
+var failure : bool = false
+
+# callbacks and flags
+var m_step_validation_callback : Callable # called each step if set
+var m_post_generation_validation_callback : Callable # called after generation if set
+var flag_use_step_validation : bool = false
+var flag_end_on_step_validation_failure : bool = false
+var flag_use_post_generation_validation : bool = false
+var flag_end_on_out_of_bounds : bool = false
+var flag_regenerate_on_failure : bool = false
 
 
 
@@ -50,144 +60,50 @@ func _init(noise_seed : int = -1):
 	else:
 		settings.randomSeed = false
 		settings.seed = noise_seed
-	self._noise =  Noise2D.get_noise(settings)
-	
-func generate_path(start : Vector2i, target : Vector2i, starting_direction : Vector2 = Vector2.ZERO, clear_old_path : bool = false):
-	if clear_old_path:
-		path = []
+	self._m_noise =  Noise2D.get_noise(settings)
 
-	if not VectorTools.a_inside_b(start, self.bounds):
-		print("Starting point (", start,") out of bounds (", self.bounds ,")")
+
+# generates full path in one call.
+func generate_path(start : Vector2i, target : Vector2i, clear_old_path : bool = false):
+	if clear_old_path:
+		m_path = []
+	m_start = start
+	m_target_point = target
+	_m_noise.seed = randi()
+
+	if not VectorTools.a_inside_b(start, self.m_bounds):
 		return
 	
-	self.cur_position = start
-	self.target_point = target
-	self.cur_direction = Vector2.DOWN
+	self.m_cur_position = m_start
+	self.m_target_point = m_target_point
+	self.m_cur_direction = Vector2.DOWN
+	update_direction()
 	
-	
-	validate_callbacks()
+	# check if callbacks are set and if they return booleans
+	_validate_callbacks()
 
-	# break if in proximity of target or outside of bounds
+	# break if in proximity of target or outside of m_bounds
 	var done = false
-	while not done:
+	failure = false
+	while not (done or failure):
+		failure = false
 		find_next_vertex()
 		
 		# check if near target
-		if VectorTools.a_within_range_of_b(self.cur_position, target_point, min_dist_from_target):
+		if VectorTools.a_within_range_of_b(self.m_cur_position, m_target_point, m_min_dist_from_target_for_success):
 			done = true
-			print("reached target")
-			print_debug_info()
-
-		
-		if use_per_step_validation:
-			if per_step_validation_callback.call():
-				print_debug("per-step validation passed.")
-				
-			else:
-				print_debug("per-step validation failed.")
-				if end_on_per_step_validation_failure:
-					done = true
 			
 		## check if oob
-		#if not VectorTools.a_inside_b(self.cur_position, self.bounds):
-			#done = true
-			#print("out of bounds")
-			#print_debug_info()
-	if use_post_generation_validation:
-		if post_generation_validation_callback.call():
-			print_debug("Post-generation validation failed.")			
-		else:
-			print_debug("Post-generation validation passed.")
-	
+		elif flag_end_on_out_of_bounds and not VectorTools.a_inside_b(self.m_cur_position, self.m_bounds):
+			failure = true
 
-# func to ensure that callbacks exist and return booleans
-func validate_callbacks():
-	var validate = func(callable, cb_name : String):
-		if not callable:
-			print_debug("Callback for \'", cb_name, "\' not set --- not using callback.")
-			return false
-		var result = callable.call()
-		if typeof(result) == TYPE_BOOL:
-			return true
-		else:
-			return false
-			print_debug("Callback for \'", cb_name, "\' does not return bool --- not using callback.")
-			
-	
-	if validate.call(per_step_validation_callback, "per step validation"):
-		use_per_step_validation = true
-	
-	if validate.call(post_generation_validation_callback, "post generation validation"):
-		use_per_step_validation
-		
 
-			
+	if flag_use_post_generation_validation:
+		if not m_post_generation_validation_callback.call():
+			failure = true
 
-func print_debug_info():
-	print("Position: ", cur_position)
-	print("Direction: ", cur_direction)
-	print("Size: ", path.size())
-	print("Target: ", target_point)
-	print("Target Range: ", min_dist_from_target)
-	print("Distance from Target: ", (target_point - cur_position).length())
 
-# if target param left empty, use same target_point
-func regenerate_from_idx(idx : int, target : Vector2i = Vector2i.MAX):
-	if target == Vector2i.MAX:
-		target = self.target_point
-	
-	# returns true if success, else false
-	if self.trim_path_to_idx(idx):
-		self.generate_path(self.cur_position, self.cur_direction, self.target_point)
-
-func trim_path_to_idx(idx : int) -> bool:
-	if idx > path.size():
-		print_debug("Tried to trim path but idx ", idx, " larger than path size.")
-		print_debug_info()
-		print_stack()
-		return false
-		
-	var new_path = []
-	for i in range(0, idx + 1):
-		new_path.append(path[i])
-	
-	path = new_path
-	self.cur_position = self.actual_end_point
-	
-	self.update_direction()
-	self.update_speed()
-	return true
-
-	
-func get_vertices_in_bounds(bounds: Vector2i):
-	var result = []
-	for vertex in path:
-		if VectorTools.a_inside_b(vertex.position, bounds):
-			result.append(vertex)
-			
-	return result
-	
-func get_all_path_positions() -> Array[Vector2i]:
-	var result :Array[Vector2i]= []
-	for vertex in path:
-		result.append(vertex.position)
-		
-		# append all extra vertices if speed is higher than 1
-		if vertex.speed > 1:
-			for i in range(1, vertex.speed + 1):
-				var displacement = calc_displacement_rounded(i, vertex.direction)
-				var new_pos = vertex.position + displacement
-				if !result.has(new_pos):
-					result.append(new_pos)
-	return result
-	
-func get_actual_endpoint():
-	if path.size() > 0:
-		return path[path.size() -1].position
-		
-func distance_to_target():
-	return Vector2(target_point - cur_position).length()
-	
+# used each step in generation
 func find_next_vertex():
 	# caches last direction and updates current
 	update_direction()
@@ -195,58 +111,78 @@ func find_next_vertex():
 	update_speed()
 	
 	# Calculate next position
-	var displacement = PerlinWorm.calc_displacement_rounded(cur_speed, cur_direction)
-	var next_pos = self.cur_position + displacement
+	var displacement = VectorTools.calc_displacement_rounded(m_cur_speed, m_cur_direction)
+	var next_pos = self.m_cur_position + displacement
 	
-	# create new vertex and add to path
-	var new_point = PathVertex.new(next_pos, cur_speed, self.cur_direction)
-	self.path.append(new_point)
+	# create new vertex and add to m_path
+	var new_point = PathVertex.new(next_pos, m_cur_speed, self.m_cur_direction)
+	self.m_path.append(new_point)
+	
+	
+
+	self.m_cur_position = next_pos
 
 
-	self.cur_position = next_pos
+func clear_path():
+	m_path = []
+
+
+
+func trim_path_to_idx(idx : int) -> bool:
+	if idx > m_path.size():
+		return false
+		
+	var new_path = []
+	for i in range(0, idx + 1):
+		new_path.append(m_path[i])
+	
+	m_path = new_path
+	self.m_cur_position = self.actual_end_point
+	
+	self.update_direction()
+	self.update_speed()
+	return true
+	
+
 
 func update_direction():
-	self._last_direction = self.cur_direction
+	self.m_last_direction = self.m_cur_direction
 	
-	var noise_value = _noise.get_noise_2dv(self.cur_position)
+	var noise_value = _m_noise.get_noise_2dv(self.m_cur_position)
 	
-	var noise_direction = NoiseTools.noise_val_to_dir(noise_value, MAX_TURN_ANGLE)
-	var target_direction = Vector2(target_point - cur_position).normalized()
+	var noise_direction = NoiseTools.noise_val_to_dir(noise_value, m_max_turn_angle)
+	var target_direction = Vector2(m_target_point - m_cur_position).normalized()
 	
 	var direction_dict = {
-		noise_direction : self.noise_weight,
-		self.cur_direction : self.cur_direction_weight,
-		target_direction : self.target_direction_weight
+		noise_direction : self.m_noise_weight,
+		self.m_cur_direction : self.m_cur_direction_weight,
+		target_direction : self.m_target_direction_weight
 	}
 	
 	var new_dir = interpolate_directions_weighted(direction_dict)
-	var new_angle = new_dir.angle_to(cur_direction)
-	if abs(rad_to_deg(new_angle)) > MAX_TURN_ANGLE:
-		print("new angle out of range: ", rad_to_deg(new_angle))
-		new_angle = sign(new_angle) * deg_to_rad(MAX_TURN_ANGLE)
-		print("clamped angle: ", rad_to_deg(new_angle))
+	var new_angle = new_dir.angle_to(m_cur_direction)
+	if abs(rad_to_deg(new_angle)) > m_max_turn_angle:
+		new_angle = sign(new_angle) * deg_to_rad(m_max_turn_angle)
 		var dx = cos(new_angle)
 		var dy = sin(new_angle)
 		new_dir = Vector2(dx, dy)
-	self.cur_direction = new_dir
+	self.m_cur_direction = new_dir
 		
 
 
 func update_speed():
 	# Calculate the difference between last direction and current direction
-	var direction_diff = rad_to_deg(_last_direction.angle_to( self.cur_direction))
+	var direction_diff = rad_to_deg(m_last_direction.angle_to( self.m_cur_direction))
 	
 	# Adjust speed based on direction difference
-	self.cur_speed = PerlinWorm.calculate_new_speed(self.cur_speed, direction_diff)
+	self.m_cur_speed = calculate_new_speed(self.m_cur_speed, direction_diff)
 
 # Function to calculate speed based on direction difference
-static func calculate_new_speed(speed, direction_diff):
+func calculate_new_speed(speed, direction_diff):
 	var delta_speed = 1
-	print("diff: ", direction_diff)
-	print("speed: ", speed)
-	if abs(direction_diff) > SPEED_ANGLE_THRESHOLD:
+	if abs(direction_diff) > m_slowdown_angle_threshold:
 		delta_speed = -1
-	return clampi(speed + delta_speed, 1, PerlinWorm.MAX_SPEED)
+	return clampi(speed + delta_speed, 1, m_max_speed)
 
 static func interpolate_directions_weighted(weighted_direction_dict : Dictionary) -> Vector2:
 	
@@ -261,16 +197,88 @@ static func interpolate_directions_weighted(weighted_direction_dict : Dictionary
 	
 		
 	return new_direction
-
-static func calc_displacement_rounded(distance : float, direction : Vector2) -> Vector2i:
-	var displacement : Vector2 = (direction * distance)
-	return Vector2i(round(displacement.x), round(displacement.y))
 	
-func set_seed(seed : int):
-	_noise.seed = seed
+func set_seed(noise_seed : int):
+	_m_noise.seed = noise_seed
 	
 func set_noise_type(noise_type : FastNoiseLite.NoiseType):
-	_noise.noise_type = noise_type
+	_m_noise.noise_type = noise_type
 	
 func set_freq(freq : float):
-	_noise.frequency = freq
+	_m_noise.frequency = freq
+
+
+func print_debug_info():
+	print("Position: ", m_cur_position)
+	print("Direction: ", m_cur_direction)
+	print("Size: ", m_path.size())
+	print("Target: ", m_target_point)
+	print("Target Range: ", m_min_dist_from_target_for_success)
+	print("Distance from Target: ", (m_target_point - m_cur_position).length())
+
+
+# ====================================   HELPERS   ====================================
+
+# func to ensure that callbacks exist and return booleans
+func _validate_callbacks():
+	var validate = func(callable, cb_name : String):
+		if not callable or typeof(callable) != TYPE_CALLABLE:
+			return false
+		var result = callable.call()
+		if typeof(result) == TYPE_BOOL:
+			return true
+		else:
+			return false
+			
+	
+	if validate.call(m_step_validation_callback, "per step validation"):
+		flag_use_step_validation = true
+	
+	if validate.call(m_post_generation_validation_callback, "post generation validation"):
+		flag_use_post_generation_validation = true
+
+func get_vertices_in_bounds(bounds: Vector2i):
+	var result = []
+	for vertex in m_path:
+		if VectorTools.a_inside_b(vertex.m_position, bounds):
+			result.append(vertex)
+			
+	return result
+	
+func get_full_path_in_bounds(bounds : Vector2i) -> Array[Vector2i]:
+	var result :Array[Vector2i]= []
+	for vertex in m_path:
+		result.append(vertex.m_position)
+		
+		# append all extra vertices if speed is higher than 1
+		if vertex.m_speed > 1:
+			for i in range(1, vertex.m_speed + 1):
+				var displacement = VectorTools.calc_displacement_rounded(i, vertex.m_direction)
+				var new_pos = vertex.m_position + displacement
+				if !result.has(new_pos) and VectorTools.a_inside_b(new_pos, bounds):
+					result.append(new_pos)
+	return result
+
+func get_vertex_positions():
+	var result = []
+	for vert in m_path:
+		result.append(vert.m_position)
+		
+	return result
+	
+func get_positions_in_bounds(bounds: Vector2i):
+	var result = []
+	for vertex in m_path:
+		if VectorTools.a_inside_b(vertex.m_position, bounds):
+			result.append(vertex.m_position)
+			
+	return result
+	
+	
+func get_actual_endpoint():
+	if m_path.size() > 0:
+		return m_path[m_path.size() -1].m_position
+		
+func distance_to_target():
+	return Vector2(m_target_point - m_cur_position).length()
+		

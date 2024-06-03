@@ -7,8 +7,7 @@ var palette = Palettes.cm_blue_yellow
 var ctrlHeld = false
 var shiftHeld = false
 var offset : float = 0
-var worm : PerlinWorm = PerlinWorm.new()
-var river : River = River.new()
+var river : RiverGenerator = RiverGenerator.new()
 var p
 
 var MIN_RIVER_SIZE : int = 0
@@ -27,34 +26,18 @@ func initialize_image(size : int = 512):
 	image = ImageProcessing.resize_2D(image, size, size)
 	
 func test_river():
-	MIN_RIVER_SIZE = image.get_size().x * (river.iterations + 1)
-	var start : Vector2i = image.get_size()
-	var i : int = 0
-	while (start.x > (image.get_size().x / 2)):
-		print(start)
-		i += 1
-		start = VectorTools.random_point_along_edge(image.get_size() - Vector2i.ONE, Enums.Direction.NORTH)
-		
-	print("took ", i, " tries")
 	
-	var target = VectorTools.random_point_along_edge(image.get_size() - Vector2i.ONE, Enums.Direction.SOUTH)
-		
-	river.create_river(start, target, image.get_size())
+	river.m_maximum_width = 5;
+	river.m_bounds = image.get_size()
+	river.generate_river()
 	
-	for point in river.get_all_points(4):
+	for point in river.get_final_river_points(image.get_size()):
 		if VectorTools.a_inside_b(point, image.get_size()):
 			image.set_pixelv(point, Color.BLUE)
 	
 
 
 	_updateTexture()
-
-
-
-func draw_target():
-	for point in VectorTools.vec2i_range(-5, 5, true, false, worm.target_point):
-		if VectorTools.a_inside_b(point, image.get_size()):
-			image.set_pixelv(point, Color.RED)
 func add_riverbanks(image : Image, radius : int):
 	var r = radius
 	if r < 1: return
