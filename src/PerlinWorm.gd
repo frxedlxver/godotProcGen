@@ -62,11 +62,7 @@ func _init(noise_seed : int = -1):
 		settings.seed = noise_seed
 	self._m_noise =  Noise2D.get_noise(settings)
 
-
-# generates full path in one call.
-func generate_path(start : Vector2i, target : Vector2i, clear_old_path : bool = false):
-	if clear_old_path:
-		m_path = []
+func initialize(start : Vector2i, target : Vector2i):
 	m_start = start
 	m_target_point = target
 	_m_noise.seed = randi()
@@ -81,6 +77,13 @@ func generate_path(start : Vector2i, target : Vector2i, clear_old_path : bool = 
 	
 	# check if callbacks are set and if they return booleans
 	_validate_callbacks()
+
+# generates full path in one call.
+func generate_path(start : Vector2i, target : Vector2i, clear_old_path : bool = false):
+	if clear_old_path:
+		m_path = []
+		
+	initialize(start, target)
 
 	# break if in proximity of target or outside of m_bounds
 	var done = false
@@ -119,7 +122,6 @@ func find_next_vertex():
 	self.m_path.append(new_point)
 	
 	
-
 	self.m_cur_position = next_pos
 
 
@@ -132,15 +134,16 @@ func trim_path_to_idx(idx : int) -> bool:
 	if idx > m_path.size():
 		return false
 		
-	var new_path = []
+	var new_path : Array[PathVertex] = []
 	for i in range(0, idx + 1):
 		new_path.append(m_path[i])
 	
 	m_path = new_path
-	self.m_cur_position = self.actual_end_point
+	if m_path.size() > 0:
+		self.m_cur_position = m_path[m_path.size() - 1].m_position
 	
-	self.update_direction()
-	self.update_speed()
+		self.update_direction()
+		self.update_speed()
 	return true
 	
 
