@@ -1,6 +1,9 @@
 extends Node2D
 
+# todo: create heightmap class, change landscapegenerator to take heightmap as parameter
+class_name MapGen
 var image : Image
+var heightMap : Image
 var texture : ImageTexture
 var settings : NoiseSettings2D
 var palette = Palettes.cm_blue_yellow
@@ -8,6 +11,7 @@ var ctrlHeld = false
 var shiftHeld = false
 var offset : float = 0
 var river : RiverGenerator = RiverGenerator.new()
+var landscape_generator : LandscapeGenerator = LandscapeGenerator.new()
 var p
 
 var MIN_RIVER_SIZE : int = 0
@@ -16,28 +20,36 @@ func _ready():
 	get_viewport().canvas_item_default_texture_filter=Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST	
 	get_tree().get_root().size_changed.connect(_updateTexture) 	
 	get_window().mode = Window.MODE_MAXIMIZED
-	initialize_image(1024)
-	test_river()
+	generate_map(Vector2i(512, 512))
 	_updateTexture()
 	
-func initialize_image(size : int = 512):
-	image = ImageProcessing.get_empty_image(1, 1)
-	image.set_pixel(0, 0, Color.GREEN)
-	image = ImageProcessing.resize_2D(image, size, size)
+func run_test(iterations : int, map_size : int):
+	for i in range(iterations):
+		generate_map(Vector2i(map_size, map_size))
+		var path = "C:\\Users\\rhend\\repos\\godotProcGen\\src\\test\\output_" + var_to_str(i) + ".jpg"
+		image.save_jpg((path), 0.5);
+		
+func generate_map(map_size : Vector2i):
+		var heightmap : Image = landscape_generator.generate_heightmap(map_size.x, map_size.y, 0.1, 0.9)
+		var landscape = landscape_generator.generate_terrain(heightmap)
+		landscape = generate_river(landscape)
+		image = landscape
+		_updateTexture()
+		
 	
-func test_river():
+func generate_river(map : Image) -> Image:
 	
-	river.m_maximum_width = 5;
-	river.m_bounds = image.get_size()
+	river.m_maximum_width = randi_range(4, 6);
+	river.m_bounds = map.get_size()
 	river.generate_river()
-	
-	for point in river.get_final_river_points(image.get_size()):
-		if VectorTools.a_inside_b(point, image.get_size()):
-			image.set_pixelv(point, Color.BLUE)
+	var new_map = map.duplicate(true)
+	for point in river.get_final_river_points(map.get_size()):
+		if VectorTools.a_inside_b(point, map.get_size()):
+			if !map.get_pixelv(point).is_equal_approx(Palettes.DEEP_WATER_COLOR):
+				new_map.set_pixelv(point, Palettes.WATER_COLOR)
+	return new_map
 	
 
-
-	_updateTexture()
 func add_riverbanks(image : Image, radius : int):
 	var r = radius
 	if r < 1: return
@@ -60,12 +72,6 @@ func add_riverbanks(image : Image, radius : int):
 								break
 					if sand:
 						image.set_pixelv(point, Color.BISQUE)
-func _updateImage():
-	image = Noise2D.layered_noise_image_2d(settings)
-
-	image = ImageProcessing.posterize_2D(image, p, offset)
-	
-	_updateTexture()
 	
 func _updateTexture():
 	if image != null:
@@ -91,4 +97,5 @@ func _draw():
 	if (texture != null):
 		draw_texture(texture, -texture.get_size() / 2)
 		
+
 

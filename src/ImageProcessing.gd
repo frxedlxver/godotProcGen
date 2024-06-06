@@ -122,4 +122,12 @@ static func frac2idx_continuous_linear(fraction : float, array_size : int) -> in
 	
 	return idx % (array_size)
 
-
+static func find_all_by_color(image : Image, color : Color) -> Array[Vector2i]:
+	var result : Array[Vector2i] = []
+	
+	for x in range(image.get_width()):
+		for y in range(image.get_height()):
+			if image.get_pixel(x, y).is_equal_approx(color):
+				result.append(Vector2i(x, y))
+	
+	return result

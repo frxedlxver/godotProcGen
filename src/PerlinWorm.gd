@@ -49,12 +49,10 @@ var flag_end_on_out_of_bounds : bool = false
 var flag_regenerate_on_failure : bool = false
 
 
-
 func _init(noise_seed : int = -1):
-	
 	var settings = NoiseSettings2D.new()
 	settings.type = FastNoiseLite.TYPE_CELLULAR
-	settings.freq = 0.01
+	settings.freq = 0.005
 	if noise_seed == -1:
 		settings.randomSeed = true
 	else:
@@ -62,28 +60,29 @@ func _init(noise_seed : int = -1):
 		settings.seed = noise_seed
 	self._m_noise =  Noise2D.get_noise(settings)
 
-func initialize(start : Vector2i, target : Vector2i):
+
+func initialize_path(start : Vector2i, target : Vector2i, start_dir : Vector2i):
+	if not VectorTools.a_inside_b(start, self.m_bounds):
+		return
 	m_start = start
 	m_target_point = target
 	_m_noise.seed = randi()
-
-	if not VectorTools.a_inside_b(start, self.m_bounds):
-		return
 	
 	self.m_cur_position = m_start
 	self.m_target_point = m_target_point
-	self.m_cur_direction = Vector2.DOWN
+	self.m_cur_direction = start_dir
 	update_direction()
 	
 	# check if callbacks are set and if they return booleans
 	_validate_callbacks()
 
+
 # generates full path in one call.
-func generate_path(start : Vector2i, target : Vector2i, clear_old_path : bool = false):
+func generate_path(start : Vector2i, target : Vector2i, start_dir : Vector2i = Vector2i.ZERO, clear_old_path : bool = false):
 	if clear_old_path:
 		m_path = []
 		
-	initialize(start, target)
+	initialize_path(start, target, start_dir)
 
 	# break if in proximity of target or outside of m_bounds
 	var done = false
@@ -106,6 +105,7 @@ func generate_path(start : Vector2i, target : Vector2i, clear_old_path : bool = 
 			failure = true
 
 
+
 # used each step in generation
 func find_next_vertex():
 	# caches last direction and updates current
@@ -117,18 +117,15 @@ func find_next_vertex():
 	var displacement = VectorTools.calc_displacement_rounded(m_cur_speed, m_cur_direction)
 	var next_pos = self.m_cur_position + displacement
 	
-	# create new vertex and add to m_path
+	# create new vertex and add to path
 	var new_point = PathVertex.new(next_pos, m_cur_speed, self.m_cur_direction)
 	self.m_path.append(new_point)
-	
 	
 	self.m_cur_position = next_pos
 
 
 func clear_path():
 	m_path = []
-
-
 
 func trim_path_to_idx(idx : int) -> bool:
 	if idx > m_path.size():
@@ -145,7 +142,6 @@ func trim_path_to_idx(idx : int) -> bool:
 		self.update_direction()
 		self.update_speed()
 	return true
-	
 
 
 func update_direction():
@@ -170,7 +166,6 @@ func update_direction():
 		var dy = sin(new_angle)
 		new_dir = Vector2(dx, dy)
 	self.m_cur_direction = new_dir
-		
 
 
 func update_speed():
@@ -180,12 +175,14 @@ func update_speed():
 	# Adjust speed based on direction difference
 	self.m_cur_speed = calculate_new_speed(self.m_cur_speed, direction_diff)
 
+
 # Function to calculate speed based on direction difference
 func calculate_new_speed(speed, direction_diff):
 	var delta_speed = 1
 	if abs(direction_diff) > m_slowdown_angle_threshold:
 		delta_speed = -1
 	return clampi(speed + delta_speed, 1, m_max_speed)
+
 
 static func interpolate_directions_weighted(weighted_direction_dict : Dictionary) -> Vector2:
 	
@@ -194,19 +191,20 @@ static func interpolate_directions_weighted(weighted_direction_dict : Dictionary
 	for dir in weighted_direction_dict.keys():
 		var weight = weighted_direction_dict[dir]
 		summed_direction += (dir * weight)
-		
 	
 	var new_direction = summed_direction.normalized()
 	
-		
 	return new_direction
-	
+
+
 func set_seed(noise_seed : int):
 	_m_noise.seed = noise_seed
-	
+
+
 func set_noise_type(noise_type : FastNoiseLite.NoiseType):
 	_m_noise.noise_type = noise_type
-	
+
+
 func set_freq(freq : float):
 	_m_noise.frequency = freq
 
@@ -233,12 +231,12 @@ func _validate_callbacks():
 		else:
 			return false
 			
-	
 	if validate.call(m_step_validation_callback, "per step validation"):
 		flag_use_step_validation = true
 	
 	if validate.call(m_post_generation_validation_callback, "post generation validation"):
 		flag_use_post_generation_validation = true
+
 
 func get_vertices_in_bounds(bounds: Vector2i):
 	var result = []
@@ -247,7 +245,8 @@ func get_vertices_in_bounds(bounds: Vector2i):
 			result.append(vertex)
 			
 	return result
-	
+
+
 func get_full_path_in_bounds(bounds : Vector2i) -> Array[Vector2i]:
 	var result :Array[Vector2i]= []
 	for vertex in m_path:
@@ -262,13 +261,15 @@ func get_full_path_in_bounds(bounds : Vector2i) -> Array[Vector2i]:
 					result.append(new_pos)
 	return result
 
+
 func get_vertex_positions():
 	var result = []
 	for vert in m_path:
 		result.append(vert.m_position)
 		
 	return result
-	
+
+
 func get_positions_in_bounds(bounds: Vector2i):
 	var result = []
 	for vertex in m_path:
@@ -276,12 +277,26 @@ func get_positions_in_bounds(bounds: Vector2i):
 			result.append(vertex.m_position)
 			
 	return result
-	
-	
+
+
 func get_actual_endpoint():
 	if m_path.size() > 0:
 		return m_path[m_path.size() -1].m_position
-		
+
+
 func distance_to_target():
 	return Vector2(m_target_point - m_cur_position).length()
+
+func size():
+	return m_path.size()
+	
+func last():
+	if size() > 0:
+		return m_path.back()
+
+func first():
+	if size() > 0:
+		return m_path[0]
 		
+func vertex_at(idx : int):
+	return m_path[idx]

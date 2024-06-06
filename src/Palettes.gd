@@ -12,10 +12,33 @@ class PaletteEntry:
 		
 static var blue_lv = 0.4
 
+static var DEEP_WATER_COLOR : Color = Color8(0, 25, 78)
+static var WATER_COLOR : Color = Color8(0, 25, 102)
+static var SAND_COLOR : Color = Color8(178, 153, 128)
+static var GRASS_COLOR : Color = Color8(65, 102, 33)
+static var HIGHLANDS_COLOR : Color = Color8(85, 125, 30)
+
+
 static var p_terrain : Array[PaletteEntry] = [
-	PaletteEntry.new(Color(0.0,0.0,0.4), 0.00, 0.4),
-	PaletteEntry.new(Color(0.25, 0.4, 0.125), 0.4, 0.9),
-	PaletteEntry.new(Color(0.7, 0.6, 0.5), 0.9, 1.0)
+	PaletteEntry.new(DEEP_WATER_COLOR, 0, 0.2),
+	PaletteEntry.new(WATER_COLOR, 0.2, 0.25),
+	PaletteEntry.new(SAND_COLOR, 0.25, 0.3),	
+	PaletteEntry.new(GRASS_COLOR, 0.3, 1.0),
+]
+
+static var p_test_bands : Array[PaletteEntry] = [
+	PaletteEntry.new(Color(0.0,0.0,0.4), 0.00, 0.1),
+	PaletteEntry.new(Color(0.7, 0.6, 0.5), 0.1, 0.2),
+	PaletteEntry.new(Color(0.0,0.0,0.4), 0.02, 0.3),
+	PaletteEntry.new(Color(0.7, 0.6, 0.5), 0.3, 0.4),
+	PaletteEntry.new(Color(0.0,0.0,0.4), 0.4, 0.5),
+	PaletteEntry.new(Color(0.7, 0.6, 0.5), 0.5, 0.6),
+	PaletteEntry.new(Color(0.0,0.0,0.4), 0.6, 0.7),
+	PaletteEntry.new(Color(0.7, 0.6, 0.5), 0.7, 0.8),
+	PaletteEntry.new(Color(0.0,0.0,0.4), 0.8, 0.9),
+	PaletteEntry.new(Color(0.7, 0.6, 0.5), 0.9, 1.0),
+	PaletteEntry.new(Color(0.0,0.0,0.4), 0.00, 0.1),
+	PaletteEntry.new(Color(0.7, 0.6, 0.5), 0.1, 0.2),
 ]
 
 static var gm_gray_8 : Array[Color] = [

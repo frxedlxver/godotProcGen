@@ -51,13 +51,13 @@ static func calc_displacement_rounded(distance : float, direction : Vector2) -> 
 	return Vector2i(round(displacement.x), round(displacement.y))
 	
 	
-static func get_filled_circle_positions(radius: int) -> Array[Vector2i]:
+static func get_filled_circle_positions(radius: int, offset : Vector2i = Vector2.ZERO) -> Array[Vector2i]:
 	var points : Array[Vector2i] = []
 	var center = Vector2i(0, 0)
 	
 	# Midpoint circle algorithm
-	var x = radius
-	var y = 0
+	var x = offset.x + radius
+	var y = offset.y
 	var decisionOver2 = 1 - x   # Decision criterion divided by 2 evaluated at (x, y) = (radius, 0)
 	
 	while y <= x:
@@ -77,7 +77,6 @@ static func get_filled_circle_positions(radius: int) -> Array[Vector2i]:
 			for dy in range(-radius, radius + 1):
 				if (Vector2i(dx, dy).length_squared() <= radius * radius) and (center + point + Vector2i(dx, dy) not in points):
 					points.append(center + point + Vector2i(dx, dy))
-	
 	return points
 
 static func _add_circle_points(center: Vector2i, x: int, y: int, points: Array) -> void:
