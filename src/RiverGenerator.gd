@@ -29,7 +29,6 @@ func generate_river():
 	var target : Vector2i = VectorTools.random_point_along_edge(m_bounds, m_target_edge)
 	br.create_river(start, target, m_bounds)
 	var rand = int(randi())
-	print(rand)
 	if (rand % 2 == 0):
 		var split_point : PerlinWorm.PathVertex = br.find_split_point_between(br.size() / 4, br.size() * 3/4)
 		split(br, split_point)

@@ -1,10 +1,39 @@
-[gd_scene load_steps=2 format=3 uid="uid://ct4y62u26mkhu"]
+[gd_scene load_steps=7 format=3 uid="uid://ct4y62u26mkhu"]
 
-[ext_resource type="Script" path="res://src/RiverTest.gd" id="1_kdus0"]
+[ext_resource type="Script" path="res://src/cam_control.gd" id="1_e7ata"]
+[ext_resource type="Script" path="res://src/TestGenerator.gd" id="1_kdus0"]
+[ext_resource type="TileSet" uid="uid://cpsmrmkbdv6ps" path="res://res/terrain.tres" id="2_jwcq4"]
+[ext_resource type="Script" path="res://src/ImageToTileConverter.gd" id="3_4uhhe"]
+[ext_resource type="TileSet" uid="uid://dmxk6mov2niyb" path="res://res/tree.tres" id="4_pdliu"]
+[ext_resource type="Script" path="res://src/TreePlacer.gd" id="5_qme07"]
 
 [node name="Node2D" type="Node2D"]
 
 [node name="Camera2D" type="Camera2D" parent="."]
+visible = false
+zoom = Vector2(0.01, 0.01)
+script = ExtResource("1_e7ata")
 
-[node name="TestObj" type="Node2D" parent="."]
+[node name="TestObj" type="Node2D" parent="." node_paths=PackedStringArray("converter", "tree_placer")]
 script = ExtResource("1_kdus0")
+converter = NodePath("../ImageToTilemapConverter")
+tree_placer = NodePath("../TreePlacer")
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = ExtResource("2_jwcq4")
+rendering_quadrant_size = 32
+format = 2
+
+[node name="ImageToTilemapConverter" type="Node2D" parent="." node_paths=PackedStringArray("m_tilemap")]
+script = ExtResource("3_4uhhe")
+m_tilemap = NodePath("../TileMap")
+
+[node name="TileMap2" type="TileMap" parent="."]
+z_index = 2
+tile_set = ExtResource("4_pdliu")
+format = 2
+layer_0/z_index = 1
+
+[node name="TreePlacer" type="Node2D" parent="." node_paths=PackedStringArray("tree_map")]
+script = ExtResource("5_qme07")
+tree_map = NodePath("../TileMap2")

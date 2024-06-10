@@ -32,7 +32,7 @@ static func random_point_along_edge(bounds : Vector2i, edge : Enums.Direction) -
 		_:
 			return Vector2i.ZERO
 
-static func vec2i_range(low : int, high : int, use_inclusive_max : bool = true, omit_center : bool = false, offset: Vector2i = Vector2i.ZERO) -> Array[Vector2i]:
+static func vec2i_range(low : int, high : int, use_inclusive_max : bool = false, omit_center : bool = false, offset: Vector2i = Vector2i.ZERO) -> Array[Vector2i]:
 	var result : Array[Vector2i] = []
 	
 	
