@@ -7,7 +7,7 @@ func generate_terrain(heightmap : Image) -> Image:
 	var image = heightmap.duplicate(true)
 	
 	image = ImageProcessing.posterize(image, Palettes.p_terrain)
-	#image = generate_rich_soil_patches(image)
+	image = generate_rich_soil_patches(image)
 		
 	
 	return image
@@ -17,10 +17,10 @@ func generate_rich_soil_patches(image : Image) -> Image:
 	noise.seed = randi()
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
 	var noise_scale = 1024 / image.get_width()
-	noise.frequency = 0.001 * noise_scale
+	noise.frequency = 0.01 * noise_scale
 	for point in ImageProcessing.find_all_by_color(image, Palettes.GRASS_COLOR):
-		if noise.get_noise_2dv(point) > 0.15:
-			image.set_pixelv(point, Color.DARK_GREEN)
+		if noise.get_noise_2dv(point) > 0.1:
+			image.set_pixelv(point, Palettes.RICH_GRASS_COLOR)
 	return image
 	
 func gradient_value(y : float, max_y : float, invert : bool = false):
