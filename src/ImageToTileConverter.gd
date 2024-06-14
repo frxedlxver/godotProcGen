@@ -17,14 +17,7 @@ var tile_atlas_coords : Dictionary = {
 		TileType.RICH_SOIL_GRASS	: Vector2i(3, 0),
 		TileType.SAND				: Vector2i(4, 0)
 	}
-@export var m_tilemap : TileMap
-var _m_tileset : TileSet
-
-func _ready():
-	_m_tileset = ResourceLoader.load("res://res/terrain.tres")
-	
-	if m_tilemap != null:
-		m_tilemap.tile_set = _m_tileset
+var m_tilemap : TileMap
 
 func convert_to_tilemap(terrain : Array[Array]):
 		

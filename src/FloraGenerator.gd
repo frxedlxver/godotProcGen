@@ -5,15 +5,15 @@ var rainfall_weight = 0.6
 var terrain_type_weight = 0.4
 
 var terrain_chance_map : Dictionary = {
-	Palettes.GRASS_COLOR : 0.3,
-	Palettes.RICH_GRASS_COLOR : 0.7
+	Palettes.GRASS_COLOR : 0.1,
+	Palettes.RICH_GRASS_COLOR : 0.6
 }
 func _generate_flora(rainfall_map : Image, terrain_map : Image):
 	var result : Array[Vector2i] = []
 	
-	var tiles_since_tree_placed = 2
+	var tiles_since_tree_placed = 5
 	for point in VectorTools.vec2i_range(0, terrain_map.get_width()):
-		if tiles_since_tree_placed >= 2:
+		if tiles_since_tree_placed >= 15:
 			var terrain_color = terrain_map.get_pixelv(point)		
 			
 			if terrain_chance_map.has(terrain_color):

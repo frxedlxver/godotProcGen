@@ -15,11 +15,11 @@ func generate_terrain(heightmap : Image) -> Image:
 func generate_rich_soil_patches(image : Image) -> Image:
 	var noise = FastNoiseLite.new()
 	noise.seed = randi()
-	noise.noise_type = FastNoiseLite.TYPE_PERLIN
+	noise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
 	var noise_scale = 1024 / image.get_width()
-	noise.frequency = 0.01 * noise_scale
+	noise.frequency = 0.001 * noise_scale
 	for point in ImageProcessing.find_all_by_color(image, Palettes.GRASS_COLOR):
-		if noise.get_noise_2dv(point) > 0.1:
+		if noise.get_noise_2dv(point) > 0:
 			image.set_pixelv(point, Palettes.RICH_GRASS_COLOR)
 	return image
 	
