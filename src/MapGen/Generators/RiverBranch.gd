@@ -30,7 +30,40 @@ func create_river(start : Vector2i, target : Vector2i, bounds : Vector2i, height
 		
 
 
+func update_direction():
+	self.m_last_direction = self.m_cur_direction
+	
+	var local_min = m_heightmap.get_pixelv(m_cur_position).v
+	var lowest_neighbour
+	for point in VectorTools.vec2i_range(-m_cur_speed, m_cur_speed, true, true):
+		if VectorTools.a_inside_b(point, m_bounds):
+			if lowest_neighbour == null || m_heightmap.get_pixelv(point).v <= local_min:
+				lowest_neighbour = point
+				local_min = m_heightmap.get_pixelv(point).v
+	
+	var height_direction = Vector2(lowest_neighbour - m_cur_position).normalized()
+	var target_direction = Vector2(m_target_point - m_cur_position).normalized()
 
+		
+	var noise_value = _m_noise.get_noise_2dv(m_cur_position)
+	var noise_direction = NoiseTools.noise_val_to_dir(noise_value, m_max_turn_angle)
+	
+	
+	var direction_dict = {
+		noise_direction : self.m_noise_weight,
+		self.m_cur_direction : self.m_cur_direction_weight,
+		target_direction : self.m_target_direction_weight,
+		height_direction : self.m_height_direction_weight
+	}
+	
+	var new_dir = interpolate_directions_weighted(direction_dict)
+	var new_angle = new_dir.angle_to(m_cur_direction)
+	if abs(rad_to_deg(new_angle)) > m_max_turn_angle:
+		new_angle = sign(new_angle) * deg_to_rad(m_max_turn_angle)
+		var dx = cos(new_angle)
+		var dy = sin(new_angle)
+		new_dir = Vector2(dx, dy)
+	self.m_cur_direction = new_dir
 # returns all points, adjusted for width
 func get_final_river_points(map_size : Vector2i) -> Array[Vector2i]:
 	var result : Array[Vector2i] = []
