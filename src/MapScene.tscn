@@ -1,0 +1,44 @@
+[gd_scene load_steps=6 format=3 uid="uid://ct4y62u26mkhu"]
+
+[ext_resource type="Script" path="res://src/CamControl.gd" id="1_hpulv"]
+[ext_resource type="Script" path="res://src/MapGen/Generators/MapGenerator.gd" id="2_2xfk5"]
+[ext_resource type="TileSet" uid="uid://dmxk6mov2niyb" path="res://res/tilesets/TerrainTileSet.tres" id="3_vd0il"]
+[ext_resource type="TileSet" uid="uid://b3cv5516t3sy3" path="res://res/tilesets/DestructibleTileset.tres" id="4_otaee"]
+[ext_resource type="Script" path="res://src/Util/InputManager.gd" id="5_d2xa2"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+visible = false
+zoom = Vector2(0.01, 0.01)
+script = ExtResource("1_hpulv")
+
+[node name="MapGenerator" type="Node2D" parent="." node_paths=PackedStringArray("tilemap_container")]
+script = ExtResource("2_2xfk5")
+tilemap_container = NodePath("../Tilemaps")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="Tilemaps" type="Node2D" parent="."]
+
+[node name="TerrainTilemap" type="TileMap" parent="Tilemaps"]
+y_sort_enabled = true
+texture_filter = 1
+tile_set = ExtResource("3_vd0il")
+rendering_quadrant_size = 32
+format = 2
+layer_0/name = "Terrain"
+layer_0/y_sort_enabled = true
+layer_0/navigation_enabled = false
+
+[node name="DestructibleTilemap" type="TileMap" parent="Tilemaps"]
+z_index = 1
+y_sort_enabled = true
+tile_set = ExtResource("4_otaee")
+rendering_quadrant_size = 32
+format = 2
+layer_0/name = "Trees"
+layer_0/y_sort_enabled = true
+
+[node name="Node2D" type="Node2D" parent="."]
+script = ExtResource("5_d2xa2")
