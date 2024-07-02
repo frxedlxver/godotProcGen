@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://bxwy0r2ydmwky"]
+
+[ext_resource type="SpriteFrames" uid="uid://c6odp0uge3uld" path="res://res/animations/mc.tres" id="1_jg6rk"]
+[ext_resource type="Script" path="res://src/Player/AnimationController.gd" id="2_86hkp"]
+[ext_resource type="Script" path="res://src/Player/StateManager.gd" id="2_bu4xx"]
+[ext_resource type="Script" path="res://src/Player/PhysicsController.gd" id="2_xl6pr"]
+
+[node name="PlayerRoot" type="Node2D"]
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("1_jg6rk")
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.873584
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="PhysicsController" type="Node2D" parent="."]
+script = ExtResource("2_xl6pr")
+
+[node name="AnimationController" type="Node2D" parent="."]
+script = ExtResource("2_86hkp")
+
+[node name="StateManager" type="Node2D" parent="."]
+script = ExtResource("2_bu4xx")

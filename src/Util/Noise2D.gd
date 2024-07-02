@@ -56,8 +56,8 @@ static func apply_noise_settings(noise : FastNoiseLite, settings : NoiseSettings
 	noise.frequency = settings.freq
 	noise.offset = settings.offset
 	noise.noise_type = settings.type
-	if settings.randomSeed:
+	if settings.randomnoise_seed:
 		noise.seed = randi()
 	else:
-		noise.seed = settings.seed
+		noise.seed = settings.noise_seed
 	return noise

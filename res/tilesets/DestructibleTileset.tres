@@ -3,83 +3,65 @@
 [ext_resource type="Texture2D" uid="uid://blusfdoq1g17i" path="res://res/sprites/trees.png" id="1_tflr0"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_evvyp"]
-load_path = "res://.godot/imported/trees-normal.png-5608d1301cd86d10af933f90d7b64e7f.ctex"
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4jp3a"]
 resource_name = "Trees-Normal"
 texture = SubResource("CompressedTexture2D_evvyp")
 texture_region_size = Vector2i(128, 128)
-0:0/size_in_atlas = Vector2i(1, 2)
 0:0/next_alternative_id = 3
 0:0/0 = 0
 0:0/0/texture_origin = Vector2i(0, 128)
 0:0/0/y_sort_origin = -1
-1:0/size_in_atlas = Vector2i(1, 2)
 1:0/0 = 0
 1:0/0/texture_origin = Vector2i(0, 128)
 1:0/0/y_sort_origin = -1
-2:0/size_in_atlas = Vector2i(1, 2)
 2:0/next_alternative_id = 2
 2:0/0 = 0
 2:0/0/texture_origin = Vector2i(0, 128)
 2:0/0/y_sort_origin = -1
-3:0/size_in_atlas = Vector2i(1, 2)
 3:0/0 = 0
 3:0/0/texture_origin = Vector2i(0, 128)
 3:0/0/y_sort_origin = -1
-0:2/size_in_atlas = Vector2i(1, 2)
 0:2/0 = 0
 0:2/0/texture_origin = Vector2i(0, 128)
 0:2/0/y_sort_origin = -1
-1:2/size_in_atlas = Vector2i(1, 2)
 1:2/0 = 0
 1:2/0/texture_origin = Vector2i(0, 128)
 1:2/0/y_sort_origin = -1
-2:2/size_in_atlas = Vector2i(1, 2)
 2:2/0 = 0
 2:2/0/texture_origin = Vector2i(0, 128)
 2:2/0/y_sort_origin = -1
-3:2/size_in_atlas = Vector2i(1, 2)
 3:2/0 = 0
 3:2/0/texture_origin = Vector2i(0, 128)
 3:2/0/y_sort_origin = -1
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_yq0bc"]
-load_path = "res://.godot/imported/trees-Large.png-e369f296876bbd988257b104213d32b5.ctex"
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_40wol"]
 resource_name = "Trees-Large"
 texture = SubResource("CompressedTexture2D_yq0bc")
 texture_region_size = Vector2i(128, 128)
-0:0/size_in_atlas = Vector2i(2, 4)
 0:0/0 = 0
 0:0/0/texture_origin = Vector2i(0, 255)
 0:0/0/y_sort_origin = -1
-2:0/size_in_atlas = Vector2i(2, 4)
 2:0/0 = 0
 2:0/0/texture_origin = Vector2i(0, 255)
 2:0/0/y_sort_origin = -1
-4:0/size_in_atlas = Vector2i(2, 4)
 4:0/0 = 0
 4:0/0/texture_origin = Vector2i(0, 255)
 4:0/0/y_sort_origin = -1
-4:4/size_in_atlas = Vector2i(2, 4)
 4:4/0 = 0
 4:4/0/texture_origin = Vector2i(0, 255)
 4:4/0/y_sort_origin = -1
-2:4/size_in_atlas = Vector2i(2, 4)
 2:4/0 = 0
 2:4/0/texture_origin = Vector2i(0, 255)
 2:4/0/y_sort_origin = -1
-0:4/size_in_atlas = Vector2i(2, 4)
 0:4/0 = 0
 0:4/0/texture_origin = Vector2i(0, 255)
 0:4/0/y_sort_origin = -1
-6:4/size_in_atlas = Vector2i(2, 4)
 6:4/0 = 0
 6:4/0/texture_origin = Vector2i(0, 255)
 6:4/0/y_sort_origin = -1
-6:0/size_in_atlas = Vector2i(2, 4)
 6:0/0 = 0
 6:0/0/texture_origin = Vector2i(0, 255)
 6:0/0/y_sort_origin = -1

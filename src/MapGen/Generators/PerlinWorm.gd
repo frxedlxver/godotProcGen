@@ -49,15 +49,15 @@ var flag_end_on_out_of_bounds : bool = false
 var flag_regenerate_on_failure : bool = false
 
 
-func _init(noise_seed : int = -1):
+func _init(noise_noise_seed : int = -1):
 	var settings = NoiseSettings2D.new()
 	settings.type = FastNoiseLite.TYPE_CELLULAR
 	settings.freq = 0.005
-	if noise_seed == -1:
-		settings.randomSeed = true
+	if noise_noise_seed == -1:
+		settings.randomnoise_seed = true
 	else:
-		settings.randomSeed = false
-		settings.seed = noise_seed
+		settings.randomnoise_seed = false
+		settings.noise_seed = noise_noise_seed
 	self._m_noise =  Noise2D.get_noise(settings)
 
 
@@ -201,8 +201,8 @@ static func interpolate_directions_weighted(weighted_direction_dict : Dictionary
 	return new_direction
 
 
-func set_seed(noise_seed : int):
-	_m_noise.seed = noise_seed
+func set_noise_seed(noise_noise_seed : int):
+	_m_noise.noise_seed = noise_noise_seed
 
 
 func set_noise_type(noise_type : FastNoiseLite.NoiseType):

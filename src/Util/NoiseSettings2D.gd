@@ -11,6 +11,6 @@ var normalize : bool				= true
 var in_3d_space : bool				= false
 var seamless : bool 				= false
 var skirt : float					= 0
-var randomSeed : bool 				= true
-var seed : int						= 0
+var randomnoise_seed : bool 				= true
+var noise_seed : int						= 0
 

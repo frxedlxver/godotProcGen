@@ -22,13 +22,11 @@ static func posterize_2D(image : Image, palette : Array[Color], offset : float =
 static func posterize(image : Image, palette, offset : float = 0) -> Image:
 	
 	var newImage = get_empty_image(image.get_width(), image.get_height())
-	var colour_count = palette.size()
 	
 	for x in range(newImage.get_width()):
 		for y in range(newImage.get_height()):
 			
 			var value = image.get_pixel(x, y).v + offset
-			var idx = frac2idx_clamped_linear(value, colour_count)
 			
 			var c : Color = Color.HOT_PINK
 			for entry in palette:
@@ -71,45 +69,6 @@ static func add_layer_to_image(image : Image, layer : Image, weight : float = 1)
 					image.set_pixel(x,y, newColor)
 					
 	return image
-
-func map_images_to_noise_3d(noise_image_3D : Array[Image], images : Array[Image], dissolve_speed : float = 0.0, ping_pong : bool = false, auto_speed: bool = false, border: bool = false, border_color : Color = Color.WHITE, border_size : float = 0.01):
-	for image in images:
-		image.resize(noise_image_3D[0].get_width(), noise_image_3D[0].get_height(), Image.INTERPOLATE_NEAREST)
-		
-	var image_count = images.size()
-	var offset = 0.0
-	if auto_speed:
-		dissolve_speed = 1 / image_count
-	if ping_pong:
-		dissolve_speed *= 2
-	
-	for z in range(noise_image_3D.size()):
-		if ping_pong && offset >= 1.0 || offset <= 0.0:
-			dissolve_speed *= -1
-		offset += dissolve_speed
-		noise_image_3D[z] = map_images_to_noise_2D(
-			noise_image_3D[z], images, offset, border,border_color, border_size
-		)
-		
-	return noise_image_3D
-
-static func map_images_to_noise_2D(noise_image_2D : Image, images_to_map : Array[Image], offset : float = 0, border : bool = false, border_color : Color = Color.WHITE, border_size : float = 0.01) -> Image:
-	var image_count = images_to_map.size()
-	var color : Color
-	var value : float
-	for x in range(noise_image_2D.get_width()):
-		for y in range(noise_image_2D.get_height()):
-			value = noise_image_2D.get_pixel(x, y).v
-			
-			var idx = ImageProcessing.frac2idx_clamped_linear(value, image_count)
-			if border:
-				var fract_idx = (value * (image_count - 1)) - idx
-				if fract_idx < border_size:
-					noise_image_2D.set_pixel(x, y, color)
-					break
-			color = images_to_map[idx].get_pixel(x, y)
-			
-	return noise_image_2D
 
 static func frac2idx_clamped_linear(fraction : float, array_size : int) -> int:
 	var idx = roundi((fraction) * (array_size - 1))
