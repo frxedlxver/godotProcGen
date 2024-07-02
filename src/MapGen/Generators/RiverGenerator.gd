@@ -16,7 +16,7 @@ var unhandled_convergences : Dictionary = {}
 
 func generate(max_starting_rivers : int, maximum_width : int, heightmap : Image):
 	m_branches = []
-	for i in range(0, max_starting_rivers):
+	for i in range(0, randi_range(1, max_starting_rivers)):
 		var branch = generate_river(randi_range(2, 4), heightmap)
 		m_branches.append(branch)
 	

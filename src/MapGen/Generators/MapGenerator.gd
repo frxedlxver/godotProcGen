@@ -88,7 +88,7 @@ func generate_river(map : Image, heightmap : Image) -> Image:
 	var river_generator = RiverGenerator.new()
 	river_generator.m_maximum_width = 6;
 	river_generator.m_bounds = map.get_size()
-	river_generator.generate(4, 2, heightmap)
+	river_generator.generate(3, 3, heightmap)
 	var river_points = river_generator.get_final_river_points(map.get_size())
 	var drawn_points = []
 	for branch in river_points:

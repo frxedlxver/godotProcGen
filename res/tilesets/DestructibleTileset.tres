@@ -1,11 +1,13 @@
-[gd_resource type="TileSet" load_steps=5 format=3 uid="uid://b3cv5516t3sy3"]
+[gd_resource type="TileSet" load_steps=7 format=3 uid="uid://b3cv5516t3sy3"]
 
-[ext_resource type="Texture2D" uid="uid://de2qhgxhp2wsx" path="res://res/sprites/trees-normal.png" id="2_3beqd"]
-[ext_resource type="Texture2D" uid="uid://c41od6ph8v1vd" path="res://res/sprites/trees-Large.png" id="3_nftmm"]
+[ext_resource type="Texture2D" uid="uid://blusfdoq1g17i" path="res://res/sprites/trees.png" id="1_tflr0"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_evvyp"]
+load_path = "res://.godot/imported/trees-normal.png-5608d1301cd86d10af933f90d7b64e7f.ctex"
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4jp3a"]
 resource_name = "Trees-Normal"
-texture = ExtResource("2_3beqd")
+texture = SubResource("CompressedTexture2D_evvyp")
 texture_region_size = Vector2i(128, 128)
 0:0/size_in_atlas = Vector2i(1, 2)
 0:0/next_alternative_id = 3
@@ -42,9 +44,12 @@ texture_region_size = Vector2i(128, 128)
 3:2/0/texture_origin = Vector2i(0, 128)
 3:2/0/y_sort_origin = -1
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_yq0bc"]
+load_path = "res://.godot/imported/trees-Large.png-e369f296876bbd988257b104213d32b5.ctex"
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_40wol"]
 resource_name = "Trees-Large"
-texture = ExtResource("3_nftmm")
+texture = SubResource("CompressedTexture2D_yq0bc")
 texture_region_size = Vector2i(128, 128)
 0:0/size_in_atlas = Vector2i(2, 4)
 0:0/0 = 0
@@ -79,6 +84,18 @@ texture_region_size = Vector2i(128, 128)
 6:0/0/texture_origin = Vector2i(0, 255)
 6:0/0/y_sort_origin = -1
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jmvg5"]
+texture = ExtResource("1_tflr0")
+texture_region_size = Vector2i(128, 128)
+0:0/size_in_atlas = Vector2i(1, 2)
+0:0/0 = 0
+1:0/size_in_atlas = Vector2i(1, 2)
+1:0/0 = 0
+2:0/size_in_atlas = Vector2i(1, 2)
+2:0/0 = 0
+3:0/size_in_atlas = Vector2i(1, 2)
+3:0/0 = 0
+
 [resource]
 tile_layout = 1
 tile_offset_axis = 1
@@ -94,5 +111,6 @@ terrain_set_0/terrain_3/name = "RichGrass"
 terrain_set_0/terrain_3/color = Color(0.318155, 0.51, 0.1989, 1)
 terrain_set_0/terrain_4/name = "Sand"
 terrain_set_0/terrain_4/color = Color(1, 0.877596, 0.59899, 1)
-sources/0 = SubResource("TileSetAtlasSource_4jp3a")
 sources/1 = SubResource("TileSetAtlasSource_40wol")
+sources/0 = SubResource("TileSetAtlasSource_4jp3a")
+sources/2 = SubResource("TileSetAtlasSource_jmvg5")
