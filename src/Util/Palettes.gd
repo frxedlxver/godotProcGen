@@ -1,5 +1,53 @@
 class_name Palettes
 
+class PaletteEntry:
+	var min : float = 0
+	var max : float = 0
+	var color : Color = Color.WHITE
+	
+	func _init(color :Color , min: float, max: float):
+		self.color = color
+		self.min = min
+		self.max = max
+		
+static var blue_lv = 0.4
+
+static var DEEP_WATER_COLOR : Color = Color8(0, 25, 78)
+static var WATER_COLOR : Color = Color8(0, 25, 102)
+static var SAND_COLOR : Color = Color8(178, 153, 128)
+static var GRASS_COLOR : Color = Color8(65, 102, 33)
+static var RICH_GRASS_COLOR : Color = Color8(85, 125, 30)
+
+
+static var p_terrain : Array[PaletteEntry] = [
+	PaletteEntry.new(DEEP_WATER_COLOR, 0, 0.3),
+	PaletteEntry.new(WATER_COLOR, 0.3, 0.34),
+	PaletteEntry.new(SAND_COLOR, 0.34, 0.35),
+	PaletteEntry.new(GRASS_COLOR, 0.35, 1.0),
+]
+
+static var p_terrain_lake_map : Array[PaletteEntry] = [
+	PaletteEntry.new(DEEP_WATER_COLOR, 0, 0.25),
+	PaletteEntry.new(WATER_COLOR, 0.4, 0.5),
+	PaletteEntry.new(SAND_COLOR, 0.3, 0.35),
+	PaletteEntry.new(GRASS_COLOR, 0.35, 1.0),
+]
+
+static var p_test_bands : Array[PaletteEntry] = [
+	PaletteEntry.new(Color(0.0,0.0,0.4), 0.00, 0.1),
+	PaletteEntry.new(Color(0.7, 0.6, 0.5), 0.1, 0.2),
+	PaletteEntry.new(Color(0.0,0.0,0.4), 0.02, 0.3),
+	PaletteEntry.new(Color(0.7, 0.6, 0.5), 0.3, 0.4),
+	PaletteEntry.new(Color(0.0,0.0,0.4), 0.4, 0.5),
+	PaletteEntry.new(Color(0.7, 0.6, 0.5), 0.5, 0.6),
+	PaletteEntry.new(Color(0.0,0.0,0.4), 0.6, 0.7),
+	PaletteEntry.new(Color(0.7, 0.6, 0.5), 0.7, 0.8),
+	PaletteEntry.new(Color(0.0,0.0,0.4), 0.8, 0.9),
+	PaletteEntry.new(Color(0.7, 0.6, 0.5), 0.9, 1.0),
+	PaletteEntry.new(Color(0.0,0.0,0.4), 0.00, 0.1),
+	PaletteEntry.new(Color(0.7, 0.6, 0.5), 0.1, 0.2),
+]
+
 static var gm_gray_8 : Array[Color] = [
 	Color(0,0,0),
 	Color(0.125, 0.125, 0,125),
@@ -31,7 +79,6 @@ static var cm_red_cyan : Array[Color] = [
 	Color(red_lv,1,1),
 ]
 
-static var blue_lv = 0.4
 static var cm_blue_yellow : Array[Color] = [
 	Color(0.0,0.0,blue_lv),
 	Color(0.125,0.125, blue_lv),
@@ -47,21 +94,16 @@ static var cm_blue_yellow : Array[Color] = [
 static var cm_terrain : Array[Color] = [
 	Color(0.0,0.0,blue_lv),
 	Color(0.0,0.0,blue_lv),
-	Color(0.0,0.0,blue_lv),
-	Color(0.0,0.0,blue_lv),
-	Color(0.0,0.0,blue_lv),	
-	Color(0.125,0.125, blue_lv),
-	Color(0.125,0.125, blue_lv),
 	Color(0.125,0.125, blue_lv),
 	Color(0.125,0.125, blue_lv),
 	Color(0.25, blue_lv, 0.125),
-	Color(0.25, blue_lv, 0.125),	
-	Color(0.25, blue_lv, 0.125),	
-	Color(0.25, blue_lv, 0.125),	
-	Color(0.25, blue_lv, 0.125),	
 	Color(0.25, blue_lv, 0.125),
+	Color(0.25, 0.35, 0.125),
+	Color(0.35, blue_lv, 0.125),
+	Color(0.35, blue_lv, 0.125),
 	Color(0.5,0.5,0.5),
 	Color(0.5,0.5,0.5),
+	Color(0.75,0.75,0.75),
 	Color(0.75,0.75,0.75),
 	Color(1,1,1),
 ]
