@@ -17,13 +17,13 @@ func _ready():
 	onStateEnter = get_node("../StateManager").onStateEnter
 	onStateEnter.connect(set_animation)
 
-func set_animation(state : StateManager.State):
+func set_animation(animation : PlayerAnimation):
 	var anim_name;
-	match (state):
-		StateManager.State.IDLE: anim_name = "idle"
-		StateManager.State.WALK_UP: anim_name = "walk_up"
-		StateManager.State.WALK_DOWN: anim_name = "walk_down"
-		StateManager.State.WALK_LEFT: anim_name = "walk_left"
-		StateManager.State.WALK_RIGHT: anim_name = "walk_right"
+	match (animation):
+		PlayerAnimation.IDLE: anim_name = "idle"
+		PlayerAnimation.WALK_UP: anim_name = "walk_up"
+		PlayerAnimation.WALK_DOWN: anim_name = "walk_down"
+		PlayerAnimation.WALK_LEFT: anim_name = "walk_left"
+		PlayerAnimation.WALK_RIGHT: anim_name = "walk_right"
 		
 	animatedSprite2D.play(anim_name);
