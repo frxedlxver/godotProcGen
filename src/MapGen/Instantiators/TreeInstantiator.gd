@@ -1,6 +1,6 @@
 extends Node2D
 
-class_name TreePlacer
+class_name TreeInstantiator
 
 var tilemap : TileMap
 var terrain_tilemap : TileMap
@@ -22,17 +22,17 @@ func initialize():
 			
 		
 
-func place_trees_at_points(tree_locations : Array[Vector2i]):
+func place_trees_at_points(tree_positions : Array[Vector2i]):
 	tilemap.clear()
-	for point in tree_locations:
-		var lg_chance = large_tree_chance
-		var tile_pos
+	for tree_world_pos in tree_positions:
+		var tree_type
 		var is_forest = false
-		if terrain_tilemap.get_cell_atlas_coords(0, point) == Vector2i(3, 0):
-			tile_pos = FOREST_TILE_COORD + Vector2i(randi_range(0, 10) % 2, 0)
-			lg_chance /= 8
+		var terrain_at_world_pos = terrain_tilemap.get_cell_atlas_coords(0, tree_world_pos)
+		
+		if  TerrainInstantiator.get_tile_type(terrain_at_world_pos) == TerrainInstantiator.TileType.FOREST_GRASS:
+			tree_type = FOREST_TILE_COORD + Vector2i(randi_range(0, 10) % 2, 0)
 			is_forest = true
 		else:
-			tile_pos= Vector2i(randi_range(0,3), 0)
+			tree_type = Vector2i(randi_range(3, 0), 0)
 		var source = 2;
-		tilemap.set_cell(0,point,source,tile_pos, 0)
+		tilemap.set_cell(0,tree_world_pos,source,tree_type, 0)

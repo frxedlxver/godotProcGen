@@ -70,13 +70,13 @@ func generate_map(map_size : Vector2i):
 
 func instantiate_map():
 	# instantiate terrain tiles on terrain tilemap
-	var terrain_instantiator : ImageToTilemapConverter = ImageToTilemapConverter.new()
+	var terrain_instantiator : TerrainInstantiator = TerrainInstantiator.new()
 	terrain_instantiator.m_tilemap = terrain_tilemap
 	terrain_instantiator.image_to_tilemap(terrain_image)
 	terrain_instantiator.queue_free()
 	
 	# instantiate trees on destructible tilemap
-	var tree_instantiator = TreePlacer.new()
+	var tree_instantiator = TreeInstantiator.new()
 	tree_instantiator.tilemap = destructible_tilemap
 	tree_instantiator.terrain_tilemap = terrain_tilemap
 	tree_instantiator.place_trees_at_points(tree_positions)
@@ -88,7 +88,8 @@ func generate_river(map : Image, heightmap : Image) -> Image:
 	var river_generator = RiverGenerator.new()
 	river_generator.m_maximum_width = 6;
 	river_generator.m_bounds = map.get_size()
-	river_generator.generate(3, 3, heightmap)
+	var max_starting_rivers = 6
+	river_generator.generate(max_starting_rivers, 3, heightmap)
 	var river_points = river_generator.get_final_river_points(map.get_size())
 	var drawn_points = []
 	for branch in river_points:

@@ -1,4 +1,4 @@
-extends Node2D
+extends Node
 class_name AnimationController
 
 var animatedSprite2D : AnimatedSprite2D
@@ -11,19 +11,42 @@ enum PlayerAnimation {
 	WALK_RIGHT
 }
 
-var onStateEnter : Signal
+var walkDirectionAnimations : Dictionary = {
+	MoveState.dir.N : "walk_up",
+	MoveState.dir.E : "walk_right",
+	MoveState.dir.S : "walk_down",
+	MoveState.dir.W : "walk_left"
+}
+
+var idleDirectionAnimations : Dictionary = {
+	MoveState.dir.N : "idle",
+	MoveState.dir.E : "idle",
+	MoveState.dir.S : "idle",
+	MoveState.dir.W : "idle"
+}
+
+var dirSuffixes : Dictionary = {
+	MoveState.dir.N : "_up",
+	MoveState.dir.E : "_right",
+	MoveState.dir.S : "_down",
+	MoveState.dir.W : "_left"
+}
+
 func _ready():
 	animatedSprite2D = get_node("../Sprite");
-	onStateEnter = get_node("../StateManager").onStateEnter
-	onStateEnter.connect(set_animation)
-
-func set_animation(animation : PlayerAnimation):
-	var anim_name;
-	match (animation):
-		PlayerAnimation.IDLE: anim_name = "idle"
-		PlayerAnimation.WALK_UP: anim_name = "walk_up"
-		PlayerAnimation.WALK_DOWN: anim_name = "walk_down"
-		PlayerAnimation.WALK_LEFT: anim_name = "walk_left"
-		PlayerAnimation.WALK_RIGHT: anim_name = "walk_right"
+	var stateManager = get_node("../StateManager")
+	stateManager.onStateEnter.connect(onStateEntered)
 		
-	animatedSprite2D.play(anim_name);
+
+	
+func onStateEntered(state : State):
+	var animationName
+	match state.statename:
+		"move":
+			var moveState : MoveState = state;
+			animationName = "walk" + dirSuffixes.get(moveState.facingDir)
+		"idle":
+			animationName = "idle";
+		_:
+			animationName = "idle"
+	animatedSprite2D.play(animationName);

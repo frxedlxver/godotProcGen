@@ -1,12 +1,11 @@
 extends Node
 class_name State
 
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
+var statename : String;
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func enter(args):
+	pass
+	
+func exit(args):
 	pass
