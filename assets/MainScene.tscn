@@ -1,0 +1,49 @@
+[gd_scene load_steps=6 format=3 uid="uid://ct4y62u26mkhu"]
+
+[ext_resource type="Script" path="res://src/MapGen/Generators/MapGenerator.gd" id="1_1mccv"]
+[ext_resource type="Script" path="res://src/Util/InputManager.gd" id="2_hx7bv"]
+[ext_resource type="PackedScene" uid="uid://bxwy0r2ydmwky" path="res://assets/Player.tscn" id="3_k1k36"]
+[ext_resource type="TileSet" uid="uid://dmxk6mov2niyb" path="res://assets/tilesets/TerrainTileSet.tres" id="4_b44lk"]
+[ext_resource type="TileSet" uid="uid://b3cv5516t3sy3" path="res://assets/tilesets/DestructibleTileset.tres" id="5_qk6wl"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="MapGenerator" type="Node2D" parent="." node_paths=PackedStringArray("tilemap_container")]
+script = ExtResource("1_1mccv")
+tilemap_container = NodePath("../YSorted/Tilemaps")
+test_mode = null
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="Node2D" type="Node2D" parent="."]
+script = ExtResource("2_hx7bv")
+
+[node name="YSorted" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="PlayerRoot" parent="YSorted" instance=ExtResource("3_k1k36")]
+
+[node name="Camera2D" type="Camera2D" parent="YSorted/PlayerRoot"]
+visible = false
+
+[node name="Tilemaps" type="Node2D" parent="YSorted"]
+y_sort_enabled = true
+
+[node name="TerrainTilemap" type="TileMap" parent="YSorted/Tilemaps"]
+z_index = -1
+texture_filter = 1
+tile_set = ExtResource("4_b44lk")
+rendering_quadrant_size = 32
+format = 2
+layer_0/name = "Terrain"
+layer_0/navigation_enabled = false
+
+[node name="DestructibleTilemap" type="TileMap" parent="YSorted/Tilemaps"]
+light_mask = 2
+visibility_layer = 2
+y_sort_enabled = true
+tile_set = ExtResource("5_qk6wl")
+rendering_quadrant_size = 32
+format = 2
+layer_0/name = "Trees"
+layer_0/y_sort_enabled = true

@@ -1,0 +1,44 @@
+[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://dmxk6mov2niyb"]
+
+[ext_resource type="Texture2D" uid="uid://cskbxeekfq174" path="res://assets/sprites/terrain.png" id="1_w5jrh"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_c52x2"]
+resource_name = "Terrain"
+texture = ExtResource("1_w5jrh")
+texture_region_size = Vector2i(128, 128)
+0:0/0 = 0
+0:0/0/terrain_set = 0
+0:0/0/terrain = 0
+1:0/0 = 0
+1:0/0/terrain_set = 0
+1:0/0/terrain = 1
+2:0/0 = 0
+2:0/0/terrain_set = 0
+2:0/0/terrain = 2
+3:0/0 = 0
+3:0/0/terrain_set = 0
+3:0/0/terrain = 3
+4:0/0 = 0
+4:0/0/terrain_set = 0
+4:0/0/terrain = 4
+
+[resource]
+tile_layout = 1
+tile_offset_axis = 1
+tile_size = Vector2i(128, 128)
+terrain_set_0/mode = 0
+terrain_set_0/terrain_0/name = "DeepWater"
+terrain_set_0/terrain_0/color = Color(0.0983175, 3.36915e-07, 0.572672, 1)
+terrain_set_0/terrain_1/name = "Water"
+terrain_set_0/terrain_1/color = Color(0.00307122, 0.23706, 0.905286, 1)
+terrain_set_0/terrain_2/name = "NormalGrass"
+terrain_set_0/terrain_2/color = Color(0.485415, 0.67, 0.4757, 1)
+terrain_set_0/terrain_3/name = "RichGrass"
+terrain_set_0/terrain_3/color = Color(0.318155, 0.51, 0.1989, 1)
+terrain_set_0/terrain_4/name = "Sand"
+terrain_set_0/terrain_4/color = Color(1, 0.877596, 0.59899, 1)
+custom_data_layer_0/name = "Tree"
+custom_data_layer_0/type = 25
+custom_data_layer_1/name = ""
+custom_data_layer_1/type = 0
+sources/0 = SubResource("TileSetAtlasSource_c52x2")
