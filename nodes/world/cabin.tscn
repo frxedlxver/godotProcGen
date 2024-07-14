@@ -1,0 +1,49 @@
+[gd_scene load_steps=6 format=3 uid="uid://bnqrolr6i6i47"]
+
+[ext_resource type="Texture2D" uid="uid://c0dx0ga7gmjiv" path="res://assets/sprites/cabin_interior.png" id="1_3jhwi"]
+[ext_resource type="Texture2D" uid="uid://lcl8b16jf4yd" path="res://assets/sprites/cabin_exterior.png" id="2_ohreh"]
+[ext_resource type="SpriteFrames" uid="uid://5j2jjga4gia1" path="res://assets/animations/cabin_door_anim.tres" id="3_a55k0"]
+[ext_resource type="Script" path="res://src/door.gd" id="3_tj2gr"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jwsbk"]
+radius = 140.129
+
+[node name="Node2D" type="Node2D"]
+y_sort_enabled = true
+
+[node name="InteriorSprite" type="Sprite2D" parent="."]
+z_index = -1
+y_sort_enabled = true
+texture = ExtResource("1_3jhwi")
+
+[node name="ExteriorSprite" type="Sprite2D" parent="."]
+y_sort_enabled = true
+position = Vector2(0, 475)
+texture = ExtResource("2_ohreh")
+offset = Vector2(0, -475)
+
+[node name="Door" type="Node2D" parent="."]
+y_sort_enabled = true
+position = Vector2(-92, 474)
+script = ExtResource("3_tj2gr")
+
+[node name="Area2D" type="Area2D" parent="Door"]
+y_sort_enabled = true
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Door/Area2D"]
+y_sort_enabled = true
+position = Vector2(-2, -46)
+shape = SubResource("CircleShape2D_jwsbk")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Door"]
+y_sort_enabled = true
+sprite_frames = ExtResource("3_a55k0")
+animation = &"opening"
+offset = Vector2(0, -95)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 2
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D"]
+polygon = PackedVector2Array(-36, 476, 310, 476, 310, -52, -312, -52, -314, 476, -136, 476, -136, 460, -304, 460, -304, -46, 300, -46, 300, 460, -36, 460)

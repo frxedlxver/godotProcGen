@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d3baj6rygkb3f"
-path="res://.godot/imported/update.svg-5b387c04355c687240fcc2692b2f5400.ctex"
+uid="uid://d2wts6qdgoivj"
+path="res://.godot/imported/cabin_door.png-1408f52b1d8497e10fe19cfb6b46118e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://engine_extensions/addons/dialogue_manager/assets/update.svg"
-dest_files=["res://.godot/imported/update.svg-5b387c04355c687240fcc2692b2f5400.ctex"]
+source_file="res://assets/sprites/cabin_door.png"
+dest_files=["res://.godot/imported/cabin_door.png-1408f52b1d8497e10fe19cfb6b46118e.ctex"]
 
 [params]
 
@@ -32,6 +32,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false
