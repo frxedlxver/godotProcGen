@@ -1,9 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://bnqrolr6i6i47"]
+[gd_scene load_steps=8 format=3 uid="uid://bnqrolr6i6i47"]
 
 [ext_resource type="Texture2D" uid="uid://c0dx0ga7gmjiv" path="res://assets/sprites/cabin_interior.png" id="1_3jhwi"]
 [ext_resource type="Texture2D" uid="uid://lcl8b16jf4yd" path="res://assets/sprites/cabin_exterior.png" id="2_ohreh"]
 [ext_resource type="SpriteFrames" uid="uid://5j2jjga4gia1" path="res://assets/animations/cabin_door_anim.tres" id="3_a55k0"]
+[ext_resource type="Script" path="res://nodes/world/BuildingExterior.gd" id="3_pp2jb"]
 [ext_resource type="Script" path="res://src/door.gd" id="3_tj2gr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_biqv7"]
+size = Vector2(577, 480)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jwsbk"]
 radius = 140.129
@@ -21,6 +25,13 @@ y_sort_enabled = true
 position = Vector2(0, 475)
 texture = ExtResource("2_ohreh")
 offset = Vector2(0, -475)
+script = ExtResource("3_pp2jb")
+
+[node name="Area2D" type="Area2D" parent="ExteriorSprite"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ExteriorSprite/Area2D"]
+position = Vector2(-3.5, -268)
+shape = SubResource("RectangleShape2D_biqv7")
 
 [node name="Door" type="Node2D" parent="."]
 y_sort_enabled = true

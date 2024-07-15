@@ -22,9 +22,9 @@ script = ExtResource("2_hx7bv")
 [node name="YSorted" type="Node2D" parent="."]
 y_sort_enabled = true
 
-[node name="PlayerRoot" parent="YSorted" instance=ExtResource("3_k1k36")]
+[node name="Player" parent="YSorted" instance=ExtResource("3_k1k36")]
 
-[node name="Camera2D" type="Camera2D" parent="YSorted/PlayerRoot"]
+[node name="Camera2D" type="Camera2D" parent="YSorted/Player"]
 visible = false
 
 [node name="cabin" parent="YSorted" instance=ExtResource("4_qwocq")]

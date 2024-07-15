@@ -6,7 +6,7 @@ var cur_state : State
 var move_force = 300
 
 func _ready():
-	body = get_node("../../PlayerRoot")
+	body = get_parent()
 	var state_manager : StateManager = get_node("../StateManager")
 	state_manager.onStateEnter.connect(onStateEntered)
 	
