@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://c0dx0ga7gmjiv" path="res://assets/sprites/cabin_interior.png" id="1_3jhwi"]
 [ext_resource type="Texture2D" uid="uid://lcl8b16jf4yd" path="res://assets/sprites/cabin_exterior.png" id="2_ohreh"]
-[ext_resource type="SpriteFrames" uid="uid://5j2jjga4gia1" path="res://assets/animations/cabin_door_anim.tres" id="3_a55k0"]
+[ext_resource type="SpriteFrames" uid="uid://5j2jjga4gia1" path="res://assets/animations/spriteframes/cabin_door_anim.tres" id="3_a55k0"]
 [ext_resource type="Script" path="res://nodes/world/BuildingExterior.gd" id="3_pp2jb"]
 [ext_resource type="Script" path="res://src/door.gd" id="3_tj2gr"]
 

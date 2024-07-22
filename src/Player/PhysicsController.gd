@@ -8,7 +8,7 @@ var move_force = 300
 func _ready():
 	body = get_parent()
 	var state_manager : StateManager = get_node("../StateManager")
-	state_manager.onStateEnter.connect(onStateEntered)
+	state_manager.state_entered.connect(state_entereded)
 	
 func _physics_process(delta):
 	var new_move_force = Vector2.ZERO
@@ -33,6 +33,5 @@ func _physics_process(delta):
 func handle_collision(collision):
 	pass
 
-func onStateEntered(state : State):
+func state_entereded(state : State):
 	cur_state = state
-	print("Phys: " + state.statename)

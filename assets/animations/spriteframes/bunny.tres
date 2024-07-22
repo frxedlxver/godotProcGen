@@ -1,0 +1,32 @@
+[gd_resource type="SpriteFrames" load_steps=5 format=3 uid="uid://dd04h3wo0ks4c"]
+
+[ext_resource type="Texture2D" uid="uid://bs4skf04yiffq" path="res://assets/animations/bun_sheet.png" id="1_1rkrv"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g201b"]
+atlas = ExtResource("1_1rkrv")
+region = Rect2(0, 60, 68, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_35rty"]
+atlas = ExtResource("1_1rkrv")
+region = Rect2(68, 60, 68, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o1j6q"]
+atlas = ExtResource("1_1rkrv")
+region = Rect2(136, 60, 68, 60)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g201b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_35rty")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o1j6q")
+}],
+"loop": true,
+"name": &"hop",
+"speed": 5.0
+}]

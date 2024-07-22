@@ -1,0 +1,37 @@
+[gd_scene load_steps=6 format=3 uid="uid://dr6aystlbr3ve"]
+
+[ext_resource type="SpriteFrames" uid="uid://dd04h3wo0ks4c" path="res://assets/animations/spriteframes/bunny.tres" id="1_fys23"]
+[ext_resource type="Script" path="res://src/NPC/AnimalStateManager.gd" id="3_nbd8s"]
+[ext_resource type="Script" path="res://src/NPC/AnimalBrain.gd" id="5_b5jt5"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_f52e6"]
+radius = 249.514
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_vgnuw"]
+radius = 14.0
+height = 46.0
+
+[node name="Bunny" type="CharacterBody2D"]
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("1_fys23")
+animation = &"hop"
+frame_progress = 0.350539
+
+[node name="AwarenessArea" type="Area2D" parent="."]
+position = Vector2(-1, 6)
+rotation = 1.5708
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AwarenessArea"]
+shape = SubResource("CircleShape2D_f52e6")
+
+[node name="bodyCollision" type="CollisionShape2D" parent="."]
+position = Vector2(-1, 6)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_vgnuw")
+
+[node name="Brain" type="Node" parent="."]
+script = ExtResource("5_b5jt5")
+
+[node name="StateManager" type="Node" parent="."]
+script = ExtResource("3_nbd8s")

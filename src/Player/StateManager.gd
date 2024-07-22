@@ -5,8 +5,8 @@ var states : Array[State]
 var curState : State
 var inputHandler : InputHandler
 
-signal onStateExit(state : State)
-signal onStateEnter(state : State)
+signal state_exited(state : State)
+signal state_entered(state : State)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -33,8 +33,8 @@ func setState(state : State):
 		enterargs = inputHandler.dirInput
 	if state == curState: return
 	state.exit(exitargs)	
-	onStateExit.emit(curState)
+	state_exited.emit(curState)
 	curState = state
 	state.enter(enterargs)
-	onStateEnter.emit(state)
+	state_entered.emit(state)
 
