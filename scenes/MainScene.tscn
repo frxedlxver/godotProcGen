@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://ct4y62u26mkhu"]
+[gd_scene load_steps=9 format=3 uid="uid://ct4y62u26mkhu"]
 
 [ext_resource type="Script" path="res://src/MapGen/Generators/MapGenerator.gd" id="1_1mccv"]
 [ext_resource type="Script" path="res://src/Util/InputManager.gd" id="2_hx7bv"]
@@ -6,6 +6,13 @@
 [ext_resource type="TileSet" uid="uid://dmxk6mov2niyb" path="res://assets/tilesets/TerrainTileSet.tres" id="4_b44lk"]
 [ext_resource type="PackedScene" uid="uid://bnqrolr6i6i47" path="res://nodes/world/cabin.tscn" id="4_qwocq"]
 [ext_resource type="TileSet" uid="uid://b3cv5516t3sy3" path="res://assets/tilesets/DestructibleTileset.tres" id="5_qk6wl"]
+[ext_resource type="PackedScene" uid="uid://do3s8f6e077gw" path="res://nodes/Bunny.tscn" id="7_4nn1t"]
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_1017f"]
+vertices = PackedVector2Array(134, 68, 134, 151, 7, 109, -74, -4, -46, -162, 88, -262, -418, 25, -82, 309, -186, 423, -454, 336, -531, 206, -479, -358, -309, -289)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3, 4, 5), PackedInt32Array(6, 7, 8, 9, 10), PackedInt32Array(6, 10, 11, 12), PackedInt32Array(12, 11, 5), PackedInt32Array(4, 12, 5)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(144, 165, 1, 117, -85, -2, -57, -156, -303, -275, -406, 22, -68, 309, -184, 435, -461, 345, -542, 209, -488, -370, 97, -271, 144, 67)])
+source_geometry_group_name = &"navigation_polygon_source_group"
 
 [node name="Node2D" type="Node2D"]
 
@@ -51,3 +58,20 @@ rendering_quadrant_size = 32
 format = 2
 layer_0/name = "Trees"
 layer_0/y_sort_enabled = true
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+navigation_polygon = SubResource("NavigationPolygon_1017f")
+
+[node name="Bunny" parent="." instance=ExtResource("7_4nn1t")]
+position = Vector2(76, 23)
+
+[node name="NavigationAgent2D" parent="Bunny" index="2"]
+radius = 31.95
+avoidance_layers = 3
+avoidance_mask = 3
+debug_enabled = true
+debug_path_custom_point_size = 9.38
+debug_path_custom_line_width = -0.4
+
+[editable path="YSorted/PlayerRoot"]
+[editable path="Bunny"]

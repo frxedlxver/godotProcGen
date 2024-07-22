@@ -29,7 +29,7 @@ func _physics_process(delta):
 	
 	if collision != null:
 		handle_collision(collision)
-		
+
 func handle_collision(collision):
 	pass
 
