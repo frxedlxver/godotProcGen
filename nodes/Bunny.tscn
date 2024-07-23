@@ -1,22 +1,33 @@
-[gd_scene load_steps=4 format=3 uid="uid://do3s8f6e077gw"]
+[gd_scene load_steps=5 format=3 uid="uid://do3s8f6e077gw"]
 
 [ext_resource type="Script" path="res://CharacterPhysicsController.gd" id="1_hdlhd"]
 [ext_resource type="SpriteFrames" uid="uid://pk4j30ifjrdv" path="res://assets/animations/bunny.tres" id="1_wmtm2"]
+[ext_resource type="Script" path="res://src/NPC/NPCNavigator.gd" id="3_s2xid"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_v3oqw"]
-height = 42.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_8nqu0"]
+radius = 17.0
 
 [node name="Bunny" type="CharacterBody2D"]
+collision_mask = 3
+motion_mode = 1
+wall_min_slide_angle = 0.0
 script = ExtResource("1_hdlhd")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("1_wmtm2")
-animation = &"hop_right"
+animation = &"idle_right"
 offset = Vector2(0, -12)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-2, 0)
 rotation = 1.5708
-shape = SubResource("CapsuleShape2D_v3oqw")
+shape = SubResource("CircleShape2D_8nqu0")
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+[node name="NPCNavigator" type="NavigationAgent2D" parent="."]
+navigation_layers = 7
 avoidance_enabled = true
+radius = 30.0
+avoidance_layers = 16
+avoidance_mask = 16
+debug_enabled = true
+script = ExtResource("3_s2xid")

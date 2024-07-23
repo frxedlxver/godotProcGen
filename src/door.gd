@@ -8,7 +8,7 @@ var isOpen : bool
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	sprite = get_node("AnimatedSprite2D")
-	detectionArea = get_node("Area2D")
+	detectionArea = get_node("DoorDetectionZone")
 	sprite.animation = "closed"
 	sprite.stop()
 	

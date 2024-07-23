@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://bnqrolr6i6i47"]
+[gd_scene load_steps=7 format=3 uid="uid://bnqrolr6i6i47"]
 
 [ext_resource type="Texture2D" uid="uid://c0dx0ga7gmjiv" path="res://assets/sprites/cabin_interior.png" id="1_3jhwi"]
 [ext_resource type="Texture2D" uid="uid://lcl8b16jf4yd" path="res://assets/sprites/cabin_exterior.png" id="2_ohreh"]
@@ -8,8 +8,20 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_jwsbk"]
 radius = 140.129
 
-[node name="Node2D" type="Node2D"]
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_iiby5"]
+friction = 0.0
+
+[node name="Cabin" type="Node2D"]
 y_sort_enabled = true
+
+[node name="InteriorArea2D" type="Area2D" parent="."]
+position = Vector2(-92, 474)
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="InteriorArea2D"]
+position = Vector2(89, -257)
+polygon = PackedVector2Array(-311, 259, -311, -271, 313, -271, 313, 255)
 
 [node name="InteriorSprite" type="Sprite2D" parent="."]
 z_index = -1
@@ -27,11 +39,11 @@ y_sort_enabled = true
 position = Vector2(-92, 474)
 script = ExtResource("3_tj2gr")
 
-[node name="Area2D" type="Area2D" parent="Door"]
+[node name="DoorDetectionZone" type="Area2D" parent="Door"]
 y_sort_enabled = true
 collision_layer = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Door/Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Door/DoorDetectionZone"]
 y_sort_enabled = true
 position = Vector2(-2, -46)
 shape = SubResource("CircleShape2D_jwsbk")
@@ -42,8 +54,16 @@ sprite_frames = ExtResource("3_a55k0")
 animation = &"opening"
 offset = Vector2(0, -95)
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
+[node name="WallStaticBody2D" type="StaticBody2D" parent="."]
 collision_layer = 2
+collision_mask = 0
+physics_material_override = SubResource("PhysicsMaterial_iiby5")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="WallStaticBody2D"]
 polygon = PackedVector2Array(-36, 476, 310, 476, 310, -52, -312, -52, -314, 476, -136, 476, -136, 460, -304, 460, -304, -46, 300, -46, 300, 460, -36, 460)
+
+[node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="."]
+visible = false
+position = Vector2(0, 200)
+radius = 415.95
+avoidance_layers = 2

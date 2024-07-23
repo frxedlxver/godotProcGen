@@ -19,21 +19,31 @@ var destructible_tilemap : TileMap
 @export var tilemap_container : Node2D
 @export var test_mode : bool
 
+signal generation_started
+signal generation_complete
+signal instantiation_started
+signal instantiation_complete
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	if tilemap_container == null:
-		tilemap_container = get_node("/root/Tilemaps")
+		tilemap_container = get_node("/root/YSorted/Tilemaps")
 	terrain_tilemap = tilemap_container.get_node("TerrainTilemap")
 	destructible_tilemap = tilemap_container.get_node("DestructibleTilemap")
 	if test_mode:
 		test_generate_and_save_images(512, 100)
 	else:
-		generate_and_instantiate(512)
+		generate_and_instantiate(64)
 
 
 func generate_and_instantiate(map_size : int):
+	print("generating")
 	generate_map(Vector2i(map_size, map_size))
+	print("instantiating")
 	instantiate_map()
+	print("done")
+	
 
 func test_generate_and_save_images(map_size : int, iterations : int, out_dir : String = "res://tests/test"):
 	var out_dir_name = out_dir
@@ -56,6 +66,7 @@ func test_generate_and_save_images(map_size : int, iterations : int, out_dir : S
 	print(var_to_str(iterations) + " completed in " + var_to_str(tTotal / 1000000) + " seconds total.")
 
 func generate_map(map_size : Vector2i):
+	generation_started.emit()
 	var heightmap : Image = HeightmapGenerator.generate_heightmap(map_size.x, map_size.y, 0.5, 0.3, 0.001, 0.002)
 	
 	# generate intial terrain
@@ -67,8 +78,10 @@ func generate_map(map_size : Vector2i):
 	#
 	## generate positions to place trees in next step
 	tree_positions = tree_gen.generate_flora(terrain_image)
+	generation_complete.emit()
 
 func instantiate_map():
+	instantiation_started.emit()
 	# instantiate terrain tiles on terrain tilemap
 	var terrain_instantiator : TerrainInstantiator = TerrainInstantiator.new()
 	terrain_instantiator.m_tilemap = terrain_tilemap
@@ -81,6 +94,8 @@ func instantiate_map():
 	tree_instantiator.terrain_tilemap = terrain_tilemap
 	tree_instantiator.place_trees_at_points(tree_positions)
 	tree_instantiator.queue_free()
+	
+	instantiation_complete.emit()
 
 func generate_river(map : Image, heightmap : Image) -> Image:
 	var new_map = map.duplicate(true)	

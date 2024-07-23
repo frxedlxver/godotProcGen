@@ -34,5 +34,5 @@ func place_trees_at_points(tree_positions : Array[Vector2i]):
 			is_forest = true
 		else:
 			tree_type = Vector2i(randi_range(3, 0), 0)
-		var source = 2;
+		var source = 0;
 		tilemap.set_cell(0,tree_world_pos,source,tree_type, 0)

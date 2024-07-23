@@ -1,6 +1,33 @@
-[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://dmxk6mov2niyb"]
+[gd_resource type="TileSet" load_steps=8 format=3 uid="uid://dmxk6mov2niyb"]
 
 [ext_resource type="Texture2D" uid="uid://cskbxeekfq174" path="res://assets/sprites/terrain.png" id="1_w5jrh"]
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_c0oq6"]
+source_geometry_group_name = &"navigation_polygon_source_group"
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_hkbjj"]
+source_geometry_group_name = &"navigation_polygon_source_group"
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_bugp7"]
+vertices = PackedVector2Array(64, 64, -64, 64, -64, -64, 64, -64)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-64, -64, 64, -64, 64, 64, -64, 64)])
+source_geometry_group_name = &"navigation_polygon_source_group"
+agent_radius = 0.0
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_kb5gk"]
+vertices = PackedVector2Array(64, 64, -64, 64, -64, -64, 64, -64)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-64, -64, 64, -64, 64, 64, -64, 64)])
+source_geometry_group_name = &"navigation_polygon_source_group"
+agent_radius = 0.0
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_ishwl"]
+vertices = PackedVector2Array(64, 64, -64, 64, -64, -64, 64, -64)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-64, -64, 64, -64, 64, 64, -64, 64)])
+source_geometry_group_name = &"navigation_polygon_source_group"
+agent_radius = 0.0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_c52x2"]
 resource_name = "Terrain"
@@ -9,18 +36,23 @@ texture_region_size = Vector2i(128, 128)
 0:0/0 = 0
 0:0/0/terrain_set = 0
 0:0/0/terrain = 0
+0:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_c0oq6")
 1:0/0 = 0
 1:0/0/terrain_set = 0
 1:0/0/terrain = 1
+1:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_hkbjj")
 2:0/0 = 0
 2:0/0/terrain_set = 0
 2:0/0/terrain = 2
+2:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_bugp7")
 3:0/0 = 0
 3:0/0/terrain_set = 0
 3:0/0/terrain = 3
+3:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_kb5gk")
 4:0/0 = 0
 4:0/0/terrain_set = 0
 4:0/0/terrain = 4
+4:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_ishwl")
 
 [resource]
 tile_layout = 1
@@ -37,8 +69,5 @@ terrain_set_0/terrain_3/name = "RichGrass"
 terrain_set_0/terrain_3/color = Color(0.318155, 0.51, 0.1989, 1)
 terrain_set_0/terrain_4/name = "Sand"
 terrain_set_0/terrain_4/color = Color(1, 0.877596, 0.59899, 1)
-custom_data_layer_0/name = "Tree"
-custom_data_layer_0/type = 25
-custom_data_layer_1/name = ""
-custom_data_layer_1/type = 0
+navigation_layer_0/layers = 1
 sources/0 = SubResource("TileSetAtlasSource_c52x2")

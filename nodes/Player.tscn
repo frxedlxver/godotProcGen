@@ -42,5 +42,5 @@ script = ExtResource("2_bu4xx")
 script = ExtResource("5_v0r5p")
 
 [node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="."]
-position = Vector2(0, -3.915)
-radius = 37.18
+radius = 25.0
+avoidance_layers = 4

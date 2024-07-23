@@ -1,41 +1,21 @@
-[gd_scene load_steps=9 format=3 uid="uid://ct4y62u26mkhu"]
+[gd_scene load_steps=10 format=3 uid="uid://ct4y62u26mkhu"]
 
-[ext_resource type="Script" path="res://src/MapGen/Generators/MapGenerator.gd" id="1_1mccv"]
-[ext_resource type="Script" path="res://src/Util/InputManager.gd" id="2_hx7bv"]
+[ext_resource type="Script" path="res://src/Map/Generators/MapGenerator.gd" id="1_1mccv"]
 [ext_resource type="PackedScene" uid="uid://bxwy0r2ydmwky" path="res://nodes/Player.tscn" id="3_k1k36"]
 [ext_resource type="TileSet" uid="uid://dmxk6mov2niyb" path="res://assets/tilesets/TerrainTileSet.tres" id="4_b44lk"]
 [ext_resource type="PackedScene" uid="uid://bnqrolr6i6i47" path="res://nodes/world/cabin.tscn" id="4_qwocq"]
+[ext_resource type="Script" path="res://scenes/Camera2D.gd" id="4_u0mcg"]
 [ext_resource type="TileSet" uid="uid://b3cv5516t3sy3" path="res://assets/tilesets/DestructibleTileset.tres" id="5_qk6wl"]
 [ext_resource type="PackedScene" uid="uid://do3s8f6e077gw" path="res://nodes/Bunny.tscn" id="7_4nn1t"]
+[ext_resource type="Script" path="res://src/Map/Managers/NavigationManager.gd" id="7_vduh5"]
 
-[sub_resource type="NavigationPolygon" id="NavigationPolygon_1017f"]
-vertices = PackedVector2Array(134, 68, 134, 151, 7, 109, -74, -4, -46, -162, 88, -262, -418, 25, -82, 309, -186, 423, -454, 336, -531, 206, -479, -358, -309, -289)
-polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3, 4, 5), PackedInt32Array(6, 7, 8, 9, 10), PackedInt32Array(6, 10, 11, 12), PackedInt32Array(12, 11, 5), PackedInt32Array(4, 12, 5)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(144, 165, 1, 117, -85, -2, -57, -156, -303, -275, -406, 22, -68, 309, -184, 435, -461, 345, -542, 209, -488, -370, 97, -271, 144, 67)])
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_xogl4"]
 source_geometry_group_name = &"navigation_polygon_source_group"
 
-[node name="Node2D" type="Node2D"]
-
-[node name="MapGenerator" type="Node2D" parent="." node_paths=PackedStringArray("tilemap_container")]
-script = ExtResource("1_1mccv")
-tilemap_container = NodePath("../YSorted/Tilemaps")
-test_mode = null
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-
-[node name="Node2D" type="Node2D" parent="."]
-script = ExtResource("2_hx7bv")
+[node name="World" type="Node2D"]
 
 [node name="YSorted" type="Node2D" parent="."]
 y_sort_enabled = true
-
-[node name="PlayerRoot" parent="YSorted" instance=ExtResource("3_k1k36")]
-
-[node name="Camera2D" type="Camera2D" parent="YSorted/PlayerRoot"]
-visible = false
-
-[node name="cabin" parent="YSorted" instance=ExtResource("4_qwocq")]
-position = Vector2(479, -351)
 
 [node name="Tilemaps" type="Node2D" parent="YSorted"]
 y_sort_enabled = true
@@ -58,20 +38,47 @@ rendering_quadrant_size = 32
 format = 2
 layer_0/name = "Trees"
 layer_0/y_sort_enabled = true
+layer_0/navigation_enabled = false
 
-[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
-navigation_polygon = SubResource("NavigationPolygon_1017f")
+[node name="Actors" type="Node2D" parent="YSorted"]
 
-[node name="Bunny" parent="." instance=ExtResource("7_4nn1t")]
+[node name="PlayerRoot" parent="YSorted/Actors" instance=ExtResource("3_k1k36")]
+
+[node name="Camera2D" type="Camera2D" parent="YSorted/Actors/PlayerRoot"]
+script = ExtResource("4_u0mcg")
+
+[node name="Bunny" parent="YSorted/Actors" instance=ExtResource("7_4nn1t")]
 position = Vector2(76, 23)
 
-[node name="NavigationAgent2D" parent="Bunny" index="2"]
-radius = 31.95
-avoidance_layers = 3
-avoidance_mask = 3
-debug_enabled = true
-debug_path_custom_point_size = 9.38
-debug_path_custom_line_width = -0.4
+[node name="NPCNavigator" parent="YSorted/Actors/Bunny" index="2"]
+target_desired_distance = 20.0
+navigation_layers = 1
+avoidance_layers = 0
+avoidance_mask = 7
 
-[editable path="YSorted/PlayerRoot"]
-[editable path="Bunny"]
+[node name="Buildings" type="Node2D" parent="YSorted"]
+
+[node name="Cabin" parent="YSorted/Buildings" instance=ExtResource("4_qwocq")]
+position = Vector2(479, 600)
+
+[node name="NavigationObstacle2D" parent="YSorted/Buildings/Cabin" index="5"]
+process_mode = 4
+visible = true
+avoidance_enabled = false
+
+[node name="Scripts" type="Node" parent="."]
+
+[node name="TilemapNavigationManager" type="NavigationRegion2D" parent="Scripts"]
+top_level = true
+navigation_polygon = SubResource("NavigationPolygon_xogl4")
+script = ExtResource("7_vduh5")
+
+[node name="MapGenerator" type="Node2D" parent="Scripts" node_paths=PackedStringArray("tilemap_container")]
+script = ExtResource("1_1mccv")
+tilemap_container = NodePath("../../YSorted/Tilemaps")
+
+[connection signal="velocity_computed" from="YSorted/Actors/Bunny/NPCNavigator" to="YSorted/Actors/Bunny" method="_on_npc_navigator_velocity_computed"]
+
+[editable path="YSorted/Actors/PlayerRoot"]
+[editable path="YSorted/Actors/Bunny"]
+[editable path="YSorted/Buildings/Cabin"]
