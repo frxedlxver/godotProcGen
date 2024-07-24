@@ -42,13 +42,17 @@ layer_0/navigation_enabled = false
 
 [node name="Actors" type="Node2D" parent="YSorted"]
 
-[node name="PlayerRoot" parent="YSorted/Actors" instance=ExtResource("3_k1k36")]
+[node name="Player" parent="YSorted/Actors" instance=ExtResource("3_k1k36")]
+collision_layer = 15
 
-[node name="Camera2D" type="Camera2D" parent="YSorted/Actors/PlayerRoot"]
+[node name="Camera2D" type="Camera2D" parent="YSorted/Actors/Player"]
 script = ExtResource("4_u0mcg")
 
 [node name="Bunny" parent="YSorted/Actors" instance=ExtResource("7_4nn1t")]
 position = Vector2(76, 23)
+
+[node name="AnimatedSprite2D" parent="YSorted/Actors/Bunny" index="0"]
+animation = &"move_left"
 
 [node name="NPCNavigator" parent="YSorted/Actors/Bunny" index="2"]
 target_desired_distance = 20.0
@@ -79,6 +83,6 @@ tilemap_container = NodePath("../../YSorted/Tilemaps")
 
 [connection signal="velocity_computed" from="YSorted/Actors/Bunny/NPCNavigator" to="YSorted/Actors/Bunny" method="_on_npc_navigator_velocity_computed"]
 
-[editable path="YSorted/Actors/PlayerRoot"]
+[editable path="YSorted/Actors/Player"]
 [editable path="YSorted/Actors/Bunny"]
 [editable path="YSorted/Buildings/Cabin"]

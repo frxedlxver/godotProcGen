@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://bnqrolr6i6i47"]
+[gd_scene load_steps=8 format=3 uid="uid://bnqrolr6i6i47"]
 
 [ext_resource type="Texture2D" uid="uid://c0dx0ga7gmjiv" path="res://assets/sprites/cabin_interior.png" id="1_3jhwi"]
+[ext_resource type="Script" path="res://src/Building.gd" id="1_h7aeq"]
 [ext_resource type="Texture2D" uid="uid://lcl8b16jf4yd" path="res://assets/sprites/cabin_exterior.png" id="2_ohreh"]
 [ext_resource type="SpriteFrames" uid="uid://5j2jjga4gia1" path="res://assets/animations/cabin_door_anim.tres" id="3_a55k0"]
 [ext_resource type="Script" path="res://src/door.gd" id="3_tj2gr"]
@@ -13,11 +14,12 @@ friction = 0.0
 
 [node name="Cabin" type="Node2D"]
 y_sort_enabled = true
+script = ExtResource("1_h7aeq")
 
 [node name="InteriorArea2D" type="Area2D" parent="."]
 position = Vector2(-92, 474)
-collision_layer = 16
-collision_mask = 0
+collision_layer = 23
+collision_mask = 7
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="InteriorArea2D"]
 position = Vector2(89, -257)
@@ -67,3 +69,6 @@ visible = false
 position = Vector2(0, 200)
 radius = 415.95
 avoidance_layers = 2
+
+[connection signal="body_entered" from="InteriorArea2D" to="." method="_on_interior_area_2d_body_entered"]
+[connection signal="body_exited" from="InteriorArea2D" to="." method="_on_interior_area_2d_body_exited"]

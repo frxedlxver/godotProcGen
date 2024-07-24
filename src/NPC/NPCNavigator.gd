@@ -8,4 +8,3 @@ func _ready():
 
 func dir_to_next_position() -> Vector2:
 	return (get_next_path_position() - parent.position).normalized()
-

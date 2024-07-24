@@ -2,7 +2,7 @@ extends CharacterBody2D
 
 class_name CharBodyController
 
-@export var max_speed : int = 300
+@export var max_speed : int = 200
 @export var acceleration : int = 100
 var current_velocity : Vector2
 var speed_multiplier : float = 1
@@ -32,6 +32,7 @@ func _physics_process(delta):
 
 func _process(delta):
 	update_sprite()
+
 func update_sprite():
 	var anim_name : String
 	if velocity.is_equal_approx(Vector2.ZERO):

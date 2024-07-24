@@ -9,7 +9,7 @@
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2xl5b"]
 height = 48.0
 
-[node name="PlayerRoot" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D"]
 y_sort_enabled = true
 collision_mask = 15
 

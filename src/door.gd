@@ -16,18 +16,20 @@ func _ready():
 	detectionArea.body_entered.connect(_open_door)
 	detectionArea.body_exited.connect(_close_door)
 
-func _open_door(area):
-	print("entered");
-	if (!isOpen):
-		sprite.animation = "opening"
-		sprite.play()
-		isOpen = true
+func _open_door(body):
+	if body.name == "Player":
+		print("entered");
+		if (!isOpen):
+			sprite.animation = "opening"
+			sprite.play()
+			isOpen = true
 	
-func _close_door(area):
-	if (isOpen):
-		sprite.animation = "opening"	
-		sprite.play_backwards()
-		isOpen = false
+func _close_door(body):
+	if body.name == "Player":
+		if (isOpen):
+			sprite.animation = "opening"	
+			sprite.play_backwards()
+			isOpen = false
 		
 func on_animation_finished():
 	if sprite.animation == "opening":

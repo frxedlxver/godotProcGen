@@ -10,17 +10,17 @@ region = Rect2(0, 0, 68, 60)
 atlas = ExtResource("1_ata7f")
 region = Rect2(0, 60, 68, 60)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_woxdw"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_ysjv8"]
 atlas = ExtResource("1_ata7f")
-region = Rect2(136, 0, 68, 60)
+region = Rect2(0, 0, 68, 60)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_41nvm"]
 atlas = ExtResource("1_ata7f")
 region = Rect2(68, 0, 68, 60)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_ysjv8"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_woxdw"]
 atlas = ExtResource("1_ata7f")
-region = Rect2(0, 0, 68, 60)
+region = Rect2(136, 0, 68, 60)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_cwbp7"]
 atlas = ExtResource("1_ata7f")
@@ -54,13 +54,13 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_woxdw")
+"texture": SubResource("AtlasTexture_ysjv8")
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_41nvm")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ysjv8")
+"texture": SubResource("AtlasTexture_woxdw")
 }],
 "loop": true,
 "name": &"move_left",

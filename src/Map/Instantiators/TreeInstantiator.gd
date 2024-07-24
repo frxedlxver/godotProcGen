@@ -9,6 +9,7 @@ var tree_layer_name = "Trees"
 var large_tree_chance = 30
 
 var FOREST_TILE_COORD = Vector2i(1, 0)
+var PLAINS_TILE_COORD = Vector2i(1, 0)
 
 func initialize():
 	if tilemap == null:
@@ -24,6 +25,9 @@ func initialize():
 
 func place_trees_at_points(tree_positions : Array[Vector2i]):
 	tilemap.clear()
+	
+	var forest_tiles = terrain_tilemap.get_used_cells_by_id(0, 0, )
+	var plains_tiles = terrain_tilemap.get_used_cells_by_id(0, 0, PLAINS_TILE_COORD)
 	for tree_world_pos in tree_positions:
 		var tree_type
 		var is_forest = false
