@@ -80,6 +80,8 @@ script = ExtResource("7_vduh5")
 [node name="MapGenerator" type="Node2D" parent="Scripts" node_paths=PackedStringArray("tilemap_container")]
 script = ExtResource("1_1mccv")
 tilemap_container = NodePath("../../YSorted/Tilemaps")
+test_mode = null
+map_size = 256
 
 [connection signal="velocity_computed" from="YSorted/Actors/Bunny/NPCNavigator" to="YSorted/Actors/Bunny" method="_on_npc_navigator_velocity_computed"]
 

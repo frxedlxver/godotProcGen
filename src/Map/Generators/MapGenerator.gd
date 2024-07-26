@@ -18,6 +18,7 @@ var terrain_tilemap : TileMap
 var destructible_tilemap : TileMap
 @export var tilemap_container : Node2D
 @export var test_mode : bool
+@export var map_size : int
 
 signal generation_started
 signal generation_complete
@@ -32,12 +33,12 @@ func _ready():
 	terrain_tilemap = tilemap_container.get_node("TerrainTilemap")
 	destructible_tilemap = tilemap_container.get_node("DestructibleTilemap")
 	if test_mode:
-		test_generate_and_save_images(512, 100)
+		test_generate_and_save_images(100)
 	else:
-		generate_and_instantiate(64)
+		generate_and_instantiate()
 
 
-func generate_and_instantiate(map_size : int):
+func generate_and_instantiate():
 	print("generating")
 	generate_map(Vector2i(map_size, map_size))
 	print("instantiating")
@@ -45,7 +46,7 @@ func generate_and_instantiate(map_size : int):
 	print("done")
 	
 
-func test_generate_and_save_images(map_size : int, iterations : int, out_dir : String = "res://tests/test"):
+func test_generate_and_save_images(iterations : int, out_dir : String = "res://tests/test"):
 	var out_dir_name = out_dir
 	var i = 1
 	var dir = DirAccess.open("res://")
@@ -67,7 +68,7 @@ func test_generate_and_save_images(map_size : int, iterations : int, out_dir : S
 
 func generate_map(map_size : Vector2i):
 	generation_started.emit()
-	var heightmap : Image = HeightmapGenerator.generate_heightmap(map_size.x, map_size.y, 0.5, 0.3, 0.001, 0.002)
+	var heightmap : Image = HeightmapGenerator.generate_heightmap(map_size.x, map_size.y)
 	
 	# generate intial terrain
 	terrain_image = TerrainGenerator.terrain_from_heightmap(heightmap)
