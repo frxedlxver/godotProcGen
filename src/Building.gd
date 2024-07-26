@@ -9,8 +9,6 @@ var area : Area2D
 func _ready():
 	sprite = get_node("ExteriorSprite")
 	area = get_node("InteriorArea2D")
-	area.body_entered.connect(_on_interior_area_2d_body_entered)
-	area.body_exited.connect(_on_interior_area_2d_body_exited)
 
 func _process(delta):
 	var fade_rate = -0.02 if body_inside else 0.02

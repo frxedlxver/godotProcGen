@@ -1,8 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://do3s8f6e077gw"]
+[gd_scene load_steps=7 format=3 uid="uid://do3s8f6e077gw"]
 
-[ext_resource type="Script" path="res://CharacterPhysicsController.gd" id="1_hdlhd"]
+[ext_resource type="Script" path="res://src/NPC/NPCStateManager.gd" id="1_fu586"]
+[ext_resource type="Script" path="res://src/NPC/NPCPhysicsController.gd" id="1_hdlhd"]
 [ext_resource type="SpriteFrames" uid="uid://pk4j30ifjrdv" path="res://assets/animations/bunny.tres" id="1_wmtm2"]
 [ext_resource type="Script" path="res://src/NPC/NPCNavigator.gd" id="3_s2xid"]
+[ext_resource type="Script" path="res://src/NPC/NPCAnimationController.gd" id="4_3dwae"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8nqu0"]
 radius = 13.0
@@ -11,7 +13,6 @@ radius = 13.0
 collision_mask = 3
 motion_mode = 1
 wall_min_slide_angle = 0.0
-script = ExtResource("1_hdlhd")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("1_wmtm2")
@@ -33,3 +34,14 @@ avoidance_layers = 16
 avoidance_mask = 16
 debug_enabled = true
 script = ExtResource("3_s2xid")
+
+[node name="NPCAnimationController" type="Node2D" parent="."]
+script = ExtResource("4_3dwae")
+
+[node name="NPCBodyController" type="Node2D" parent="."]
+script = ExtResource("1_hdlhd")
+
+[node name="NPCStateManager" type="Node2D" parent="."]
+script = ExtResource("1_fu586")
+
+[connection signal="velocity_computed" from="NPCNavigator" to="NPCBodyController" method="_on_npc_navigator_velocity_computed"]
