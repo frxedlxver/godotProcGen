@@ -45,20 +45,33 @@ layer_0/navigation_enabled = false
 [node name="Player" parent="YSorted/Actors" instance=ExtResource("3_k1k36")]
 collision_layer = 15
 
-[node name="Camera2D" type="Camera2D" parent="YSorted/Actors/Player"]
-script = ExtResource("4_u0mcg")
-
 [node name="Bunny" parent="YSorted/Actors" instance=ExtResource("7_4nn1t")]
+top_level = true
 position = Vector2(76, 23)
+collision_layer = 0
+collision_mask = 0
 
 [node name="AnimatedSprite2D" parent="YSorted/Actors/Bunny" index="0"]
-animation = &"move_left"
+animation = &"move_right"
 
 [node name="NPCNavigator" parent="YSorted/Actors/Bunny" index="2"]
 target_desired_distance = 20.0
 navigation_layers = 1
 avoidance_layers = 0
 avoidance_mask = 7
+
+[node name="NPCData" parent="YSorted/Actors/Bunny" index="5"]
+move_range = 200.0
+
+[node name="BehaviorTree" parent="YSorted/Actors/Bunny" index="6" node_paths=PackedStringArray("blackboard")]
+blackboard = NodePath("@Node@17604")
+
+[node name="InitializeIdleTimer" parent="YSorted/Actors/Bunny/BehaviorTree/Main" index="0"]
+max_ticks = 250
+
+[node name="Camera2D" type="Camera2D" parent="YSorted/Actors/Bunny"]
+position = Vector2(-76, -23)
+script = ExtResource("4_u0mcg")
 
 [node name="Buildings" type="Node2D" parent="YSorted"]
 
@@ -84,6 +97,7 @@ test_mode = null
 map_size = 256
 
 [connection signal="velocity_computed" from="YSorted/Actors/Bunny/NPCNavigator" to="YSorted/Actors/Bunny" method="_on_npc_navigator_velocity_computed"]
+[connection signal="timeout" from="YSorted/Actors/Bunny/NPCNavigator/path_recalculation_timer" to="YSorted/Actors/Bunny/NPCNavigator" method="_on_recalculation_timer_timeout"]
 
 [editable path="YSorted/Actors/Player"]
 [editable path="YSorted/Actors/Bunny"]

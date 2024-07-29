@@ -104,4 +104,17 @@ static func _add_circle_points(center: Vector2i, x: int, y: int, points: Array) 
 	points.append(center + Vector2i(-x,  y))
 	points.append(center + Vector2i( x, -y))
 	points.append(center + Vector2i(-x, -y))
+	
+# Static function to quantize a normalized Vector2
+static func quantize_normalized_vector2(vec: Vector2, divisions: int) -> Vector2:
+	assert(vec.length() == 1.0, "Input vector must be normalized.")
+	
+	var division_angle = 2 * PI / divisions
+	var closest_division = round(vec.angle() / division_angle) % divisions
+	
+	var angle = closest_division * division_angle
+	var quantized_vec = Vector2(cos(angle), sin(angle))
+	
+	return quantized_vec
+	
 

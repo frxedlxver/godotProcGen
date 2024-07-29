@@ -1,30 +1,59 @@
-extends Node2D
-class_name NPCBodyController
+class_name NPCBodyController extends Node2D
 
-signal velocity_updated(velocity)
 
-var max_speed : int = 200
-var acceleration : int = 100
-var target_position : Vector2
-@onready var body = get_parent()
+var dir : Vector2
+var velocity : Vector2
 @onready var nav_agent : NPCNavigator = get_node("../NPCNavigator")
+@onready var npc_data : NPCData = get_node("../NPCData")
+@onready var parent : NPCRoot = get_parent()
+var position_last_timeout : Vector2
+var finished_navigating : bool = false
+
+var target_position : Vector2 :
+	get:
+		return nav_agent.next_target_position
+	set(value):
+		_recalculate_path(value)
+
 
 func _ready():
-	get_node("../NPCStateManager").target_position_changed.connect(_set_target_position)
-
+	nav_agent.target_reached.connect(_on_npc_navigator_target_reached)
 func _physics_process(delta):
 	if not nav_agent.is_navigation_finished():
-		var dir = nav_agent.dir_to_next_position()
-		var new_velocity = nav_agent.velocity.lerp(dir * max_speed, acceleration * delta)
-		body.move_and_collide(new_velocity * delta)
-		emit_signal("velocity_updated", new_velocity)
-
-func _set_target_position(point : Vector2):
-	target_position = point
-	
-func _on_recalculate_timer_timeout():
-	nav_agent.target_position = self.target_position
+		self._update_cached_direction()
+		nav_agent.velocity = nav_agent.velocity.lerp(dir * npc_data.move_speed * delta, npc_data.acceleration * delta)
+		
+func _recalculate_path(new_position):
+	finished_navigating = false
+	nav_agent.next_target_position = new_position
 	
 func _on_npc_navigator_velocity_computed(safe_velocity):
-	body.velocity = safe_velocity
-	velocity_updated.emit()
+	parent.velocity = safe_velocity
+	self.velocity = safe_velocity
+	parent.move_and_collide(safe_velocity)
+
+func _on_npc_navigator_target_reached():
+	finished_navigating = true
+	print("finished")
+	
+func _update_cached_direction():
+	var facing = get_direction_string()
+	dir = nav_agent.dir_to_next_position()
+
+func is_moving() -> bool:
+	return !self.velocity.is_equal_approx(Vector2.ZERO)
+
+func is_finished_navigating():
+	return nav_agent.target_reached
+	
+func get_direction_string() -> String:
+	if dir.x >= 0:
+		return "right"
+	else:
+		return "left"
+
+func get_target_position():
+	return nav_agent.next_target_position
+	
+func has_next_target_position():
+	return !nav_agent.is_navigation_finished()

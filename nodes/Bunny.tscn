@@ -1,10 +1,17 @@
-[gd_scene load_steps=7 format=3 uid="uid://do3s8f6e077gw"]
+[gd_scene load_steps=14 format=3 uid="uid://do3s8f6e077gw"]
 
-[ext_resource type="Script" path="res://src/NPC/NPCStateManager.gd" id="1_fu586"]
+[ext_resource type="Script" path="res://src/NPC/NPCRoot.gd" id="1_eemqy"]
 [ext_resource type="Script" path="res://src/NPC/NPCPhysicsController.gd" id="1_hdlhd"]
 [ext_resource type="SpriteFrames" uid="uid://pk4j30ifjrdv" path="res://assets/animations/bunny.tres" id="1_wmtm2"]
 [ext_resource type="Script" path="res://src/NPC/NPCNavigator.gd" id="3_s2xid"]
 [ext_resource type="Script" path="res://src/NPC/NPCAnimationController.gd" id="4_3dwae"]
+[ext_resource type="Script" path="res://src/NPC/NPCData.gd" id="5_jahln"]
+[ext_resource type="Script" path="res://addons/beehave/nodes/beehave_tree.gd" id="6_1v6hn"]
+[ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="7_wxo8x"]
+[ext_resource type="Script" path="res://src/NPC/BeehaveNodes/Actions/InitializeIdleTimer.gd" id="9_0crts"]
+[ext_resource type="Script" path="res://src/NPC/BeehaveNodes/Actions/MoveToTargetPosition.gd" id="9_4xo33"]
+[ext_resource type="Script" path="res://src/NPC/BeehaveNodes/Actions/FindRandomClosePosition.gd" id="10_nr308"]
+[ext_resource type="Script" path="res://src/NPC/BeehaveNodes/Conditions/WaitForTimer.gd" id="10_vmdia"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8nqu0"]
 radius = 13.0
@@ -13,6 +20,7 @@ radius = 13.0
 collision_mask = 3
 motion_mode = 1
 wall_min_slide_angle = 0.0
+script = ExtResource("1_eemqy")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("1_wmtm2")
@@ -35,13 +43,44 @@ avoidance_mask = 16
 debug_enabled = true
 script = ExtResource("3_s2xid")
 
+[node name="path_recalculation_timer" type="Timer" parent="NPCNavigator"]
+wait_time = 0.05
+autostart = true
+
 [node name="NPCAnimationController" type="Node2D" parent="."]
 script = ExtResource("4_3dwae")
 
 [node name="NPCBodyController" type="Node2D" parent="."]
 script = ExtResource("1_hdlhd")
 
-[node name="NPCStateManager" type="Node2D" parent="."]
-script = ExtResource("1_fu586")
+[node name="NPCData" type="Node" parent="."]
+script = ExtResource("5_jahln")
+move_speed = 200.0
+acceleration = 100.0
+move_range = 20.0
+
+[node name="BehaviorTree" type="Node" parent="." node_paths=PackedStringArray("blackboard", "actor")]
+script = ExtResource("6_1v6hn")
+actor_node_path = NodePath("..")
+blackboard = NodePath("@Node@17606")
+actor = NodePath("..")
+
+[node name="Main" type="Node" parent="BehaviorTree"]
+script = ExtResource("7_wxo8x")
+
+[node name="InitializeIdleTimer" type="Node" parent="BehaviorTree/Main"]
+script = ExtResource("9_0crts")
+
+[node name="WaitForTimer" type="Node" parent="BehaviorTree/Main"]
+script = ExtResource("10_vmdia")
+
+[node name="FindTargetAndMove" type="Node" parent="BehaviorTree/Main"]
+script = ExtResource("7_wxo8x")
+
+[node name="FindRandomClosePosition" type="Node" parent="BehaviorTree/Main/FindTargetAndMove"]
+script = ExtResource("10_nr308")
+
+[node name="MoveToTargetPosition" type="Node" parent="BehaviorTree/Main/FindTargetAndMove"]
+script = ExtResource("9_4xo33")
 
 [connection signal="velocity_computed" from="NPCNavigator" to="NPCBodyController" method="_on_npc_navigator_velocity_computed"]
