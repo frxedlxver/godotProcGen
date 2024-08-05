@@ -1,0 +1,239 @@
+[gd_scene load_steps=6 format=3 uid="uid://bktayn5mkwq7m"]
+
+[ext_resource type="Script" path="res://examples/basic_test/test_root.gd" id="1"]
+[ext_resource type="Script" path="res://addons/xsm/state.gd" id="2"]
+[ext_resource type="Script" path="res://examples/basic_test/test_loop.gd" id="3"]
+[ext_resource type="Script" path="res://addons/xsm/state_regions.gd" id="4"]
+[ext_resource type="Script" path="res://examples/basic_test/test_substates.gd" id="5"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="StateRoot" type="Node" parent="."]
+script = ExtResource("1")
+history_size = 5
+disabled = false
+debug_mode = false
+target_path = NodePath("../Panel/VBoxContainer/HBCActiveStates/ActiveStates")
+timed = false
+next_state = NodePath("")
+
+[node name="State1" type="Node" parent="StateRoot"]
+script = ExtResource("5")
+disabled = false
+debug_mode = false
+target_path = NodePath("../../Panel/VBoxContainer/HBCHistory/History")
+timed = false
+next_state = NodePath("../StateRegions")
+
+[node name="Substate1" type="Node" parent="StateRoot/State1"]
+script = ExtResource("2")
+disabled = false
+debug_mode = false
+target_path = NodePath("")
+timed = false
+next_state = NodePath("../Substate2")
+
+[node name="Substate2" type="Node" parent="StateRoot/State1"]
+script = ExtResource("2")
+disabled = false
+debug_mode = false
+target_path = NodePath("")
+timed = false
+next_state = NodePath("../Substate3")
+
+[node name="Substate3" type="Node" parent="StateRoot/State1"]
+script = ExtResource("2")
+disabled = false
+debug_mode = false
+target_path = NodePath("")
+timed = false
+next_state = NodePath("")
+
+[node name="StateRegions" type="Node" parent="StateRoot"]
+script = ExtResource("4")
+disabled = false
+debug_mode = false
+target_path = NodePath("")
+timed = false
+next_state = NodePath("../StateLoop")
+
+[node name="Region1" type="Node" parent="StateRoot/StateRegions"]
+script = ExtResource("2")
+disabled = false
+debug_mode = false
+target_path = NodePath("")
+timed = false
+next_state = NodePath("../Region2")
+
+[node name="Region2" type="Node" parent="StateRoot/StateRegions"]
+script = ExtResource("2")
+disabled = false
+debug_mode = false
+target_path = NodePath("")
+timed = false
+next_state = NodePath("../Region3")
+
+[node name="Region3" type="Node" parent="StateRoot/StateRegions"]
+script = ExtResource("2")
+disabled = false
+debug_mode = false
+target_path = NodePath("")
+timed = false
+next_state = NodePath("")
+
+[node name="StateLoop" type="Node" parent="StateRoot"]
+script = ExtResource("3")
+loop_mode = 1
+exit_state = NodePath("../State1/Substate3")
+disabled = false
+debug_mode = false
+target_path = NodePath("../../Panel/VBoxContainer/HBCLoopButtons")
+timed = false
+next_state = NodePath("")
+
+[node name="Loop1" type="Node" parent="StateRoot/StateLoop"]
+script = ExtResource("2")
+disabled = false
+debug_mode = false
+target_path = NodePath("")
+timed = false
+next_state = NodePath("../Loop2")
+
+[node name="Loop2" type="Node" parent="StateRoot/StateLoop"]
+script = ExtResource("2")
+disabled = false
+debug_mode = false
+target_path = NodePath("")
+timed = false
+next_state = NodePath("../Loop3")
+
+[node name="Loop3" type="Node" parent="StateRoot/StateLoop"]
+script = ExtResource("2")
+disabled = false
+debug_mode = false
+target_path = NodePath("")
+timed = false
+next_state = NodePath("../Loop4")
+
+[node name="Loop4" type="Node" parent="StateRoot/StateLoop"]
+script = ExtResource("2")
+disabled = false
+debug_mode = false
+target_path = NodePath("")
+timed = false
+next_state = NodePath("../Loop5")
+
+[node name="Loop5" type="Node" parent="StateRoot/StateLoop"]
+script = ExtResource("2")
+disabled = false
+debug_mode = false
+target_path = NodePath("")
+timed = false
+next_state = NodePath("")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBCActiveStates" type="HBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/HBCActiveStates"]
+layout_mode = 2
+text = "Active States: "
+
+[node name="ActiveStates" type="Label" parent="Panel/VBoxContainer/HBCActiveStates"]
+layout_mode = 2
+
+[node name="HBCButtons" type="HBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Goto1" type="Button" parent="Panel/VBoxContainer/HBCButtons"]
+layout_mode = 2
+text = "Goto State1"
+
+[node name="GotoRegions" type="Button" parent="Panel/VBoxContainer/HBCButtons"]
+layout_mode = 2
+text = "Goto StateRegions"
+
+[node name="GotoLoop" type="Button" parent="Panel/VBoxContainer/HBCButtons"]
+layout_mode = 2
+text = "Goto StateLoop"
+
+[node name="HBCLoopButtons" type="HBoxContainer" parent="Panel/VBoxContainer"]
+visible = false
+layout_mode = 2
+alignment = 1
+
+[node name="Spacer" type="MarginContainer" parent="Panel/VBoxContainer/HBCLoopButtons"]
+layout_mode = 2
+
+[node name="OptionButton" type="OptionButton" parent="Panel/VBoxContainer/HBCLoopButtons"]
+layout_mode = 2
+item_count = 4
+selected = 1
+popup/item_0/text = "Disabled"
+popup/item_0/id = 0
+popup/item_1/text = "Forward"
+popup/item_1/id = 1
+popup/item_2/text = "Backward"
+popup/item_2/id = 2
+popup/item_3/text = "Ping_Pong"
+popup/item_3/id = 3
+
+[node name="LoopPrev" type="Button" parent="Panel/VBoxContainer/HBCLoopButtons"]
+layout_mode = 2
+text = "Loop Prev"
+
+[node name="LoopNext" type="Button" parent="Panel/VBoxContainer/HBCLoopButtons"]
+layout_mode = 2
+text = "Loop Next"
+
+[node name="LoopExit" type="Button" parent="Panel/VBoxContainer/HBCLoopButtons"]
+layout_mode = 2
+text = "Loop Exit"
+
+[node name="HBCHistory" type="HBoxContainer" parent="Panel/VBoxContainer"]
+visible = false
+layout_mode = 2
+alignment = 1
+
+[node name="History" type="VBoxContainer" parent="Panel/VBoxContainer/HBCHistory"]
+layout_mode = 2
+
+[node name="Spacer" type="MarginContainer" parent="Panel/VBoxContainer/HBCHistory"]
+layout_mode = 2
+
+[connection signal="pressed" from="Panel/VBoxContainer/HBCButtons/Goto1" to="StateRoot" method="_on_Goto1_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/HBCButtons/GotoRegions" to="StateRoot" method="_on_GotoRegions_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/HBCButtons/GotoLoop" to="StateRoot" method="_on_GotoLoop_pressed"]
+[connection signal="item_selected" from="Panel/VBoxContainer/HBCLoopButtons/OptionButton" to="StateRoot/StateLoop" method="_on_OptionButton_item_selected"]
+[connection signal="pressed" from="Panel/VBoxContainer/HBCLoopButtons/LoopPrev" to="StateRoot/StateLoop" method="_on_LoopPrev_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/HBCLoopButtons/LoopNext" to="StateRoot/StateLoop" method="_on_LoopNext_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/HBCLoopButtons/LoopExit" to="StateRoot/StateLoop" method="_on_LoopExit_pressed"]
