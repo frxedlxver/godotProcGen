@@ -21,7 +21,6 @@ func before_run(actor, blackboard: Blackboard):
 ## Executes this node and returns a status code.
 ## This method must be overwritten.
 func tick(actor, blackboard: Blackboard) -> int:
-	
 	if started_nav:
 		if actor.body_controller.finished_navigating:
 			return SUCCESS

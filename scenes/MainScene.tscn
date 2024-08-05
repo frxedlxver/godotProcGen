@@ -52,6 +52,7 @@ collision_layer = 0
 collision_mask = 0
 
 [node name="AnimatedSprite2D" parent="YSorted/Actors/Bunny" index="0"]
+visible = false
 animation = &"move_right"
 
 [node name="NPCNavigator" parent="YSorted/Actors/Bunny" index="2"]
@@ -64,7 +65,7 @@ avoidance_mask = 7
 move_range = 200.0
 
 [node name="BehaviorTree" parent="YSorted/Actors/Bunny" index="6" node_paths=PackedStringArray("blackboard")]
-blackboard = NodePath("@Node@17604")
+blackboard = NodePath("@Node@27032")
 
 [node name="InitializeIdleTimer" parent="YSorted/Actors/Bunny/BehaviorTree/Main" index="0"]
 max_ticks = 250
