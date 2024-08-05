@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3 uid="uid://d34a52kj5ljdd"]
+
+[ext_resource type="Script" path="res://src/Player/Player.gd" id="1_6ed76"]
+[ext_resource type="SpriteFrames" uid="uid://c6odp0uge3uld" path="res://assets/animations/mc.tres" id="1_n80pu"]
+[ext_resource type="Script" path="res://src/Player/PlayerStateMachine.gd" id="3_1pbx3"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2xl5b"]
+height = 48.0
+
+[node name="Player" type="CharacterBody2D"]
+y_sort_enabled = true
+collision_layer = 15
+collision_mask = 15
+script = ExtResource("1_6ed76")
+
+[node name="NavigationCollider" type="CollisionShape2D" parent="."]
+position = Vector2(0, -5)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_2xl5b")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+light_mask = 2
+visibility_layer = 2
+z_as_relative = false
+y_sort_enabled = true
+sprite_frames = ExtResource("1_n80pu")
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.510571
+offset = Vector2(0, -64)
+
+[node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="."]
+radius = 25.0
+avoidance_layers = 4
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("3_1pbx3")

@@ -1,14 +1,17 @@
-extends Node
-class_name State
+class_name State extends Node
 
-var statename : String;
+var _player : Player
+func _init_state(player : Player):
+	_player = player
 
-
-func enter(args):
-	pass
-
-func process():
+func enter():
 	pass
 	
-func exit(args):
+func exit():
+	pass
+	
+func process_state(delta):
+	pass
+	
+func interrupt():
 	pass

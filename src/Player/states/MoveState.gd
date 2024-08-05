@@ -1,24 +1,11 @@
-extends State
-class_name MoveState
+extends Node
 
-var direction : Vector2i
-var facingDir : dir
-enum dir {
-	N,
-	E,
-	S,
-	W
-}
 
-func _init():
-	statename = "move"
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
 
-func enter(args):
-	direction = args
-	setFacingDir()
-	
-func setFacingDir():
-	if direction.y < 0 : facingDir = dir.N;
-	elif direction.y > 0 : facingDir = dir.S;
-	elif direction.x > 0 : facingDir = dir.E;
-	elif direction.x < 0 : facingDir = dir.W; 
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
